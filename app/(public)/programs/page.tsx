@@ -1,7 +1,9 @@
-import Link from "next/link";
-import { BookOpen, Clock, ArrowRight } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ProgramCard } from "@/components/shared/program-card";
+import {
+  PROGRAM_CATEGORIES,
+  PROGRAM_CATEGORY_LABELS,
+  PROGRAM_CATEGORY_DESCRIPTIONS,
+} from "@/lib/constants/programs";
 import { courseService } from "@/lib/services/course-service";
 
 export default async function ProgramsPage() {
@@ -12,38 +14,33 @@ export default async function ProgramsPage() {
       <div className="max-w-2xl">
         <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">Programs</h1>
         <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-          SKAFF ACADEMY offers certificate, diploma, and short course programs delivered
+          SKAFF ACADEMY offers practical, industry-oriented training across technology, digital
+          business, creative production, and professional development. Training is delivered
           primarily through physical classes on our Kigali campus.
         </p>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {programs.map((program) => (
-          <Card key={program.id} className="flex flex-col">
-            <CardHeader>
-              <CardTitle className="text-base">{program.name}</CardTitle>
-              <CardDescription>{program.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="mt-auto">
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  <BookOpen className="size-3.5" />
-                  {program.level.replace("_", " ")}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="size-3.5" />
-                  {program.durationMonths} months
-                </span>
+      <div className="mt-10 space-y-14">
+        {PROGRAM_CATEGORIES.map((category) => {
+          const categoryPrograms = programs.filter((p) => p.category === category);
+          if (categoryPrograms.length === 0) return null;
+
+          return (
+            <section key={category}>
+              <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+                {PROGRAM_CATEGORY_LABELS[category]}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {PROGRAM_CATEGORY_DESCRIPTIONS[category]}
+              </p>
+              <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {categoryPrograms.map((program) => (
+                  <ProgramCard key={program.id} program={program} />
+                ))}
               </div>
-              <Button variant="link" className="mt-2 h-auto px-0" asChild>
-                <Link href="/admissions">
-                  Apply now
-                  <ArrowRight className="size-3.5" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+            </section>
+          );
+        })}
       </div>
     </div>
   );

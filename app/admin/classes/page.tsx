@@ -5,7 +5,7 @@ import { courseService } from "@/lib/services/course-service";
 import type { ClassGroup } from "@/lib/types";
 
 export default async function AdminClassesPage() {
-  const intakes = await courseService.listIntakesForProgram("prog-1");
+  const intakes = await courseService.listAllIntakes();
   const groups: ClassGroup[] = (
     await Promise.all(intakes.map((intake) => courseService.listClassGroupsForIntake(intake.id)))
   ).flat();

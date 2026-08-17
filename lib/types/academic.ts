@@ -4,15 +4,30 @@
  * A Program can have multiple Intakes; an Intake can contain one or more ClassGroups.
  */
 
-export type ProgramLevel = "certificate" | "diploma" | "short_course";
+export type ProgramCategory =
+  | "technology"
+  | "digital_business"
+  | "creative_production"
+  | "professional_development";
 
 export interface Program {
   id: string;
+  slug: string;
   code: string;
   name: string;
-  level: ProgramLevel;
+  category: ProgramCategory;
+  /** Short marketing description used on cards and listings. */
   description: string;
-  durationMonths: number;
+  /** Longer overview paragraph used on the program detail page. */
+  overview: string;
+  /** Concise outcome bullets for the "What you will learn" section. */
+  whatYouWillLearn: string[];
+  /** How the program is delivered. Most programs are physical-first with online support. */
+  learningModes: ClassSessionMode[];
+  /** Only set once a duration is confirmed; omit rather than invent one. */
+  durationMonths?: number;
+  /** Surfaces a program in curated homepage placements. */
+  featured?: boolean;
   isActive: boolean;
 }
 
