@@ -10,8 +10,20 @@ export const courseService = {
     return programs;
   },
 
+  async listFeaturedPrograms(): Promise<Program[]> {
+    return programs.filter((p) => p.featured);
+  },
+
   async getProgram(programId: string): Promise<Program | undefined> {
     return programs.find((p) => p.id === programId);
+  },
+
+  async getProgramBySlug(slug: string): Promise<Program | undefined> {
+    return programs.find((p) => p.slug === slug);
+  },
+
+  async listAllIntakes(): Promise<Intake[]> {
+    return intakes;
   },
 
   async listIntakesForProgram(programId: string): Promise<Intake[]> {

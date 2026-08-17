@@ -1,9 +1,17 @@
 export type AnnouncementAudience = "all" | "students" | "staff" | "applicants";
 
+export type AnnouncementCategory =
+  | "admissions"
+  | "academic"
+  | "campus"
+  | "programs"
+  | "general";
+
 export interface Announcement {
   id: string;
   title: string;
   body: string;
+  category: AnnouncementCategory;
   audience: AnnouncementAudience;
   publishedAt: string;
   authorStaffId: string;
