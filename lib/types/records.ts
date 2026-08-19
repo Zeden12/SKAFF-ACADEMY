@@ -16,25 +16,39 @@ export interface Result {
   id: string;
   studentId: string;
   moduleId: string;
-  intakeId: string;
+  assessmentName: string;
   score: number;
+  maxScore: number;
   grade: ResultGrade;
+  feedback?: string;
   publishedAt?: string;
 }
 
-export type PaymentMethod = "cash" | "mobile_money" | "bank_transfer" | "card";
-export type PaymentStatus = "pending" | "paid" | "partial" | "overdue" | "refunded";
+export type FeeStatus = "paid" | "partially_paid" | "pending" | "overdue";
 
-export interface PaymentRecord {
+/** A billable item on a student's account (e.g. one term's tuition). */
+export interface FeeRecord {
   id: string;
   studentId: string;
   intakeId: string;
   description: string;
-  amountDue: number;
+  totalAmount: number;
   amountPaid: number;
   currency: "RWF" | "USD";
-  status: PaymentStatus;
-  method?: PaymentMethod;
-  dueDate: string;
-  paidAt?: string;
+  status: FeeStatus;
+  dueDate?: string;
+}
+
+export type PaymentMethod = "cash" | "mobile_money" | "bank_transfer" | "card";
+
+/** A single payment/receipt applied against a FeeRecord. */
+export interface PaymentTransaction {
+  id: string;
+  feeRecordId: string;
+  studentId: string;
+  amount: number;
+  currency: "RWF" | "USD";
+  method: PaymentMethod;
+  reference: string;
+  paidAt: string;
 }

@@ -1,5 +1,7 @@
-import type { Program, Intake, ClassGroup } from "@/lib/types";
+import type { Program, Intake, ClassGroup, Module, User, StaffProfile } from "@/lib/types";
 import { programs, intakes, classGroups } from "@/lib/mock-data/programs";
+import { modules } from "@/lib/mock-data/modules";
+import { staffProfiles, staffUsers } from "@/lib/mock-data/staff";
 
 /**
  * Course/program data access. Mock-backed for now; swap the function bodies
@@ -36,5 +38,25 @@ export const courseService = {
 
   async listClassGroupsForIntake(intakeId: string): Promise<ClassGroup[]> {
     return classGroups.filter((c) => c.intakeId === intakeId);
+  },
+
+  async getClassGroup(classGroupId: string): Promise<ClassGroup | undefined> {
+    return classGroups.find((c) => c.id === classGroupId);
+  },
+
+  async listModulesForProgram(programId: string): Promise<Module[]> {
+    return modules.filter((m) => m.programId === programId);
+  },
+
+  async getModule(moduleId: string): Promise<Module | undefined> {
+    return modules.find((m) => m.id === moduleId);
+  },
+
+  async getStaffMember(staffId: string): Promise<{ profile: StaffProfile; user: User } | undefined> {
+    const profile = staffProfiles.find((s) => s.id === staffId);
+    if (!profile) return undefined;
+    const user = staffUsers.find((u) => u.id === profile.userId);
+    if (!user) return undefined;
+    return { profile, user };
   },
 };

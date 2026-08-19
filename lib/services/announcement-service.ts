@@ -17,4 +17,10 @@ export const announcementService = {
   async getAnnouncement(announcementId: string): Promise<Announcement | undefined> {
     return announcements.find((a) => a.id === announcementId);
   },
+
+  /** Announcements relevant to a student: academy-wide, plus any scoped to their program. */
+  async listAnnouncementsForStudentProgram(programId: string): Promise<Announcement[]> {
+    const forStudents = await announcementService.listAnnouncements("students");
+    return forStudents.filter((a) => !a.programId || a.programId === programId);
+  },
 };

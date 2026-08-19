@@ -4,8 +4,13 @@ export interface LearningMaterial {
   id: string;
   moduleId: string;
   title: string;
+  description?: string;
   type: LearningMaterialType;
-  fileUrl: string;
+  /** Set for document/slide_deck/video materials. Metadata only — no real file is stored. */
+  fileUrl?: string;
+  fileSizeKb?: number;
+  /** Set for "link" type materials pointing to a real external resource. */
+  externalUrl?: string;
   uploadedByStaffId: string;
   uploadedAt: string;
 }
@@ -31,7 +36,10 @@ export interface Submission {
   assignmentId: string;
   studentId: string;
   status: SubmissionStatus;
-  fileUrl?: string;
+  fileName?: string;
+  fileType?: string;
+  fileSizeKb?: number;
+  note?: string;
   submittedAt?: string;
   score?: number;
   feedback?: string;

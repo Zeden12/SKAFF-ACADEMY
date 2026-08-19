@@ -86,5 +86,7 @@ export interface ClassSession {
   location?: string;
   /** Meeting link, only relevant when mode is "online" */
   onlineUrl?: string;
+  /** Optional instructions shown alongside the session, e.g. what to bring. */
+  notes?: string;
   staffId: string;
 }
