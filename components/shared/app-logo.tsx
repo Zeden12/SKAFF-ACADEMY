@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/constants/site";
+import { SITE_LOGO_SRC } from "@/lib/constants/media";
 
 interface AppLogoProps {
   href?: string;
@@ -26,13 +27,14 @@ export function AppLogo({
       className={cn("flex items-center gap-2.5", className)}
       aria-label={`${SITE.name} home`}
     >
-      <span
-        className={cn(
-          "flex size-9 shrink-0 items-center justify-center rounded-md",
-          isOnDark ? "bg-primary text-primary-foreground" : "bg-primary text-primary-foreground"
-        )}
-      >
-        <GraduationCap className="size-5" aria-hidden="true" />
+      <span className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white ring-1 ring-border">
+        <Image
+          src={SITE_LOGO_SRC}
+          alt=""
+          fill
+          sizes="36px"
+          className="origin-top scale-[1.7] object-cover object-top"
+        />
       </span>
       <span className="flex flex-col leading-tight">
         <span

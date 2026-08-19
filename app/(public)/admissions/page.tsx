@@ -82,13 +82,19 @@ export default function AdmissionsPage() {
         ))}
       </div>
 
-      <div className="mt-12 flex flex-wrap gap-3">
+      <div className="mt-12 flex flex-wrap items-center gap-3">
         <Button size="lg" asChild>
-          <Link href="/programs">Start Application</Link>
+          <Link href="/admissions/apply">Start Application</Link>
         </Button>
         <Button size="lg" variant="outline" asChild>
           <Link href="/contact">Contact Admissions</Link>
         </Button>
+        <Link
+          href="/admissions/status"
+          className="text-sm font-medium text-primary hover:underline"
+        >
+          Already applied? Track your application
+        </Link>
       </div>
 
       <div className="mt-14 rounded-lg border border-border bg-secondary/40 p-6 sm:p-8">

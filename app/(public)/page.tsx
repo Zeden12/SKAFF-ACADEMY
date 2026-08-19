@@ -19,7 +19,9 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { ImagePlaceholder } from "@/components/shared/image-placeholder";
 import { ProgramCard } from "@/components/shared/program-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { HeroSlider } from "@/components/shared/hero-slider";
 import { SITE } from "@/lib/constants/site";
+import { HERO_SLIDES, TRAINING_GALLERY_IMAGES } from "@/lib/constants/media";
 import { courseService } from "@/lib/services/course-service";
 import { announcementService } from "@/lib/services/announcement-service";
 
@@ -96,9 +98,9 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="border-b border-border bg-navy">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
-          <div>
+      <HeroSlider slides={HERO_SLIDES} className="min-h-[560px] sm:min-h-[600px]">
+        <div className="mx-auto flex min-h-[560px] max-w-6xl items-center px-4 py-16 sm:min-h-[600px] sm:px-6 lg:py-24">
+          <div className="max-w-2xl">
             <p className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
               {SITE.location}
             </p>
@@ -112,7 +114,7 @@ export default async function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" asChild>
-                <Link href="/admissions">
+                <Link href="/admissions/apply">
                   Apply for Admission
                   <ArrowRight className="size-4" />
                 </Link>
@@ -127,15 +129,8 @@ export default async function HomePage() {
               </Button>
             </div>
           </div>
-          <ImagePlaceholder
-            alt="Instructor guiding students during a hands-on practical training session at the SKAFF ACADEMY campus"
-            label="Campus training session"
-            icon={Users}
-            aspectClassName="aspect-[4/3]"
-            className="border-white/10 bg-white/5"
-          />
         </div>
-      </section>
+      </HeroSlider>
 
       {/* Featured Programs */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
@@ -199,10 +194,12 @@ export default async function HomePage() {
             {TRAINING_GALLERY.map(({ icon, label }) => (
               <ImagePlaceholder
                 key={label}
+                src={TRAINING_GALLERY_IMAGES[label]}
                 alt={`${label} at SKAFF ACADEMY`}
                 label={label}
                 icon={icon}
                 aspectClassName="aspect-square"
+                sizes="(min-width: 1024px) 220px, (min-width: 640px) 30vw, 45vw"
               />
             ))}
           </div>
@@ -250,7 +247,7 @@ export default async function HomePage() {
           </div>
           <div className="flex shrink-0 flex-wrap gap-3">
             <Button size="lg" asChild>
-              <Link href="/admissions">Start Application</Link>
+              <Link href="/admissions/apply">Start Application</Link>
             </Button>
             <Button
               size="lg"

@@ -15,6 +15,7 @@ import {
   PROGRAM_INTAKE_NOTE,
 } from "@/lib/constants/programs";
 import { courseService } from "@/lib/services/course-service";
+import { PROGRAM_IMAGES } from "@/lib/constants/media";
 import type { ProgramCategory } from "@/lib/types";
 
 const CATEGORY_ICONS: Record<ProgramCategory, typeof Code2> = {
@@ -76,16 +77,18 @@ export default async function ProgramDetailPage({
       </div>
 
       <ImagePlaceholder
+        src={PROGRAM_IMAGES[program.slug]}
         alt={`${program.name} training at SKAFF ACADEMY`}
         label={`${program.name} training`}
         icon={CATEGORY_ICONS[program.category]}
         aspectClassName="aspect-[21/9]"
         className="mt-6"
+        sizes="(min-width: 1024px) 896px, 100vw"
       />
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Button size="lg" asChild>
-          <Link href="/admissions">Apply for This Program</Link>
+          <Link href={`/admissions/apply?program=${program.slug}`}>Apply for This Program</Link>
         </Button>
         <Button size="lg" variant="outline" asChild>
           <Link href="/contact">Ask a Question</Link>
@@ -184,7 +187,7 @@ export default async function ProgramDetailPage({
         </p>
         <div className="mt-5 flex flex-wrap justify-center gap-3">
           <Button size="lg" asChild>
-            <Link href="/admissions">Apply for This Program</Link>
+            <Link href={`/admissions/apply?program=${program.slug}`}>Apply for This Program</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
             <Link href="/contact">Contact Admissions</Link>
