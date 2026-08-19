@@ -32,10 +32,13 @@ export interface StudentProfile {
   intakeId: string;
   classGroupId?: string;
   dateOfBirth?: string;
+  nationality?: string;
   nationalId?: string;
   address?: string;
   guardianName?: string;
   guardianPhone?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
   enrolledAt: string;
 }
 

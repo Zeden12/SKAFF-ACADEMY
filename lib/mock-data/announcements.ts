@@ -38,4 +38,14 @@ export const announcements: Announcement[] = [
     publishedAt: "2025-11-15",
     authorStaffId: "staff-2",
   },
+  {
+    id: "ann-5",
+    title: "React module materials now available",
+    body: "Slides and reference links for the React module have been published. Check the Materials page for the full set, and join the optional project clinic if you'd like extra support.",
+    category: "academic",
+    audience: "students",
+    programId: "prog-fullstack",
+    publishedAt: "2025-12-14",
+    authorStaffId: "staff-1",
+  },
 ];

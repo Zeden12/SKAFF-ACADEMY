@@ -297,6 +297,7 @@ export const classGroups: ClassGroup[] = [
     name: "FSD-2026-A",
     capacity: 25,
     homeRoom: "Lab 3",
+    staffLeadId: "staff-1",
   },
   {
     id: "class-2",
