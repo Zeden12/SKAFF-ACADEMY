@@ -1,0 +1,302 @@
+import type { Application } from "@/lib/types";
+import { generateApplicationReference } from "@/lib/services/application-reference";
+
+function doc(
+  id: string,
+  category: Application["documents"][number]["category"],
+  fileName: string,
+  fileType: string,
+  fileSizeKb: number,
+  uploadedAt: string
+): Application["documents"][number] {
+  return { id, category, fileName, fileType, fileSizeKb, uploadedAt };
+}
+
+/**
+ * Seed data covering every operational admissions state. Mutated in place by admissions-service
+ * as a stand-in "database" for this mock/frontend-first phase — a real backend can later own
+ * this array's persistence without changing the service's function signatures.
+ */
+export const applications: Application[] = [
+  {
+    id: "app-1",
+    reference: generateApplicationReference(1),
+    programId: "prog-fullstack",
+    learningMode: "physical",
+    personalInformation: {
+      fullName: "Jean Claude Habimana",
+      email: "jc.habimana@example.com",
+      phone: "+250 788 111 222",
+      dateOfBirth: "2001-04-12",
+      nationality: "Rwandan",
+      address: "Kicukiro, Kigali",
+    },
+    education: {
+      highestLevel: "secondary",
+      institution: "Green Hills Academy",
+      fieldOfStudy: "Mathematics, Physics, Computer Science",
+      completionYear: 2023,
+    },
+    documents: [
+      doc("doc-1a", "identification", "jc_national_id.pdf", "application/pdf", 812, "2026-01-05"),
+      doc("doc-1b", "passport_photo", "jc_photo.jpg", "image/jpeg", 240, "2026-01-05"),
+      doc("doc-1c", "academic_document", "jc_transcript.pdf", "application/pdf", 1180, "2026-01-05"),
+    ],
+    status: "submitted",
+    createdAt: "2026-01-05T09:12:00.000Z",
+    submittedAt: "2026-01-05T09:20:00.000Z",
+    history: [
+      { id: "h-1-1", timestamp: "2026-01-05T09:12:00.000Z", actor: "system", action: "Application created", visibility: "internal" },
+      { id: "h-1-2", timestamp: "2026-01-05T09:20:00.000Z", actor: "applicant", actorName: "Jean Claude Habimana", action: "Application submitted", visibility: "public" },
+    ],
+  },
+  {
+    id: "app-2",
+    reference: generateApplicationReference(2),
+    programId: "prog-uiux",
+    learningMode: "physical",
+    personalInformation: {
+      fullName: "Aline Mutesi",
+      email: "aline.mutesi@example.com",
+      phone: "+250 788 222 333",
+      dateOfBirth: "1999-09-02",
+      nationality: "Rwandan",
+      address: "Remera, Kigali",
+    },
+    education: {
+      highestLevel: "diploma",
+      institution: "Kigali Institute of Technology",
+      fieldOfStudy: "Information Technology",
+      completionYear: 2021,
+      notes: "Two years of freelance graphic design experience.",
+    },
+    documents: [
+      doc("doc-2a", "identification", "aline_id.pdf", "application/pdf", 690, "2025-12-18"),
+      doc("doc-2b", "passport_photo", "aline_photo.jpg", "image/jpeg", 305, "2025-12-18"),
+      doc("doc-2c", "academic_document", "aline_diploma.pdf", "application/pdf", 940, "2025-12-18"),
+    ],
+    status: "under_review",
+    createdAt: "2025-12-18T11:02:00.000Z",
+    submittedAt: "2025-12-18T11:15:00.000Z",
+    history: [
+      { id: "h-2-1", timestamp: "2025-12-18T11:02:00.000Z", actor: "system", action: "Application created", visibility: "internal" },
+      { id: "h-2-2", timestamp: "2025-12-18T11:15:00.000Z", actor: "applicant", actorName: "Aline Mutesi", action: "Application submitted", visibility: "public" },
+      { id: "h-2-3", timestamp: "2025-12-20T08:30:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Review started", visibility: "public" },
+    ],
+  },
+  {
+    id: "app-3",
+    reference: generateApplicationReference(3),
+    programId: "prog-digital-marketing",
+    learningMode: "physical",
+    personalInformation: {
+      fullName: "Eric Nshuti",
+      email: "eric.nshuti@example.com",
+      phone: "+250 788 333 444",
+      dateOfBirth: "2000-01-27",
+      nationality: "Rwandan",
+      address: "Nyamirambo, Kigali",
+    },
+    education: {
+      highestLevel: "secondary",
+      institution: "APAPER Secondary School",
+      completionYear: 2022,
+    },
+    documents: [
+      doc("doc-3a", "identification", "eric_id.pdf", "application/pdf", 500, "2025-12-10"),
+      doc("doc-3b", "passport_photo", "eric_photo.jpg", "image/jpeg", 210, "2025-12-10"),
+      doc("doc-3c", "academic_document", "eric_certificate_scan.jpg", "image/jpeg", 2380, "2025-12-10"),
+    ],
+    status: "more_information_required",
+    createdAt: "2025-12-10T14:00:00.000Z",
+    submittedAt: "2025-12-10T14:20:00.000Z",
+    applicantMessage:
+      "The academic document you uploaded is not legible. Please re-upload a clearer scan or photo of your secondary school certificate.",
+    internalNotes: "Certificate scan is blurry/rotated — cannot verify grades. Flagged for follow-up.",
+    history: [
+      { id: "h-3-1", timestamp: "2025-12-10T14:00:00.000Z", actor: "system", action: "Application created", visibility: "internal" },
+      { id: "h-3-2", timestamp: "2025-12-10T14:20:00.000Z", actor: "applicant", actorName: "Eric Nshuti", action: "Application submitted", visibility: "public" },
+      { id: "h-3-3", timestamp: "2025-12-12T09:10:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Review started", visibility: "public" },
+      {
+        id: "h-3-4",
+        timestamp: "2025-12-13T10:05:00.000Z",
+        actor: "admissions_staff",
+        actorName: "Admissions Team",
+        action: "Additional information requested",
+        description: "The academic document you uploaded is not legible. Please re-upload a clearer scan or photo of your secondary school certificate.",
+        visibility: "public",
+      },
+    ],
+  },
+  {
+    id: "app-4",
+    reference: generateApplicationReference(4),
+    programId: "prog-video-production",
+    learningMode: "physical",
+    personalInformation: {
+      fullName: "Divine Uwase",
+      email: "divine.uwase@example.com",
+      phone: "+250 788 444 555",
+      dateOfBirth: "1998-06-19",
+      nationality: "Rwandan",
+      address: "Gisozi, Kigali",
+    },
+    education: {
+      highestLevel: "certificate",
+      institution: "Rwanda Polytechnic",
+      fieldOfStudy: "Media Studies",
+      completionYear: 2020,
+    },
+    documents: [
+      doc("doc-4a", "identification", "divine_id.pdf", "application/pdf", 700, "2025-11-20"),
+      doc("doc-4b", "passport_photo", "divine_photo.jpg", "image/jpeg", 260, "2025-11-20"),
+      doc("doc-4c", "academic_document", "divine_certificate.pdf", "application/pdf", 860, "2025-11-20"),
+    ],
+    status: "approved",
+    createdAt: "2025-11-20T08:45:00.000Z",
+    submittedAt: "2025-11-20T09:00:00.000Z",
+    decision: {
+      status: "approved",
+      message:
+        "Congratulations, Divine — your application to Video Production has been approved. Our registrar will be in touch with enrollment instructions.",
+      decidedAt: "2025-11-26T13:00:00.000Z",
+      decidedBy: "Admissions Team",
+    },
+    internalNotes: "Strong portfolio submitted separately during a campus visit. Approve.",
+    history: [
+      { id: "h-4-1", timestamp: "2025-11-20T08:45:00.000Z", actor: "system", action: "Application created", visibility: "internal" },
+      { id: "h-4-2", timestamp: "2025-11-20T09:00:00.000Z", actor: "applicant", actorName: "Divine Uwase", action: "Application submitted", visibility: "public" },
+      { id: "h-4-3", timestamp: "2025-11-22T10:00:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Review started", visibility: "public" },
+      {
+        id: "h-4-4",
+        timestamp: "2025-11-26T13:00:00.000Z",
+        actor: "admissions_staff",
+        actorName: "Admissions Team",
+        action: "Application approved",
+        description: "Congratulations, Divine — your application to Video Production has been approved. Our registrar will be in touch with enrollment instructions.",
+        visibility: "public",
+      },
+    ],
+  },
+  {
+    id: "app-5",
+    reference: generateApplicationReference(5),
+    programId: "prog-audio-production",
+    learningMode: "physical",
+    personalInformation: {
+      fullName: "Patrick Iradukunda",
+      email: "patrick.iradukunda@example.com",
+      phone: "+250 788 555 666",
+      dateOfBirth: "1997-03-08",
+      nationality: "Rwandan",
+      address: "Kimironko, Kigali",
+    },
+    education: {
+      highestLevel: "secondary",
+      institution: "Lycee de Kigali",
+      completionYear: 2019,
+    },
+    documents: [
+      doc("doc-5a", "identification", "patrick_id.pdf", "application/pdf", 640, "2025-11-02"),
+      doc("doc-5b", "passport_photo", "patrick_photo.jpg", "image/jpeg", 190, "2025-11-02"),
+      doc("doc-5c", "academic_document", "patrick_certificate.pdf", "application/pdf", 770, "2025-11-02"),
+    ],
+    status: "rejected",
+    createdAt: "2025-11-02T16:00:00.000Z",
+    submittedAt: "2025-11-02T16:10:00.000Z",
+    decision: {
+      status: "rejected",
+      message:
+        "Thank you for your interest in SKAFF ACADEMY. After review, we're unable to offer you a place in Audio Production for this intake. You're welcome to apply again in a future intake.",
+      decidedAt: "2025-11-08T09:30:00.000Z",
+      decidedBy: "Admissions Team",
+    },
+    internalNotes: "Audio Production cohort reached capacity before review completed.",
+    history: [
+      { id: "h-5-1", timestamp: "2025-11-02T16:00:00.000Z", actor: "system", action: "Application created", visibility: "internal" },
+      { id: "h-5-2", timestamp: "2025-11-02T16:10:00.000Z", actor: "applicant", actorName: "Patrick Iradukunda", action: "Application submitted", visibility: "public" },
+      { id: "h-5-3", timestamp: "2025-11-05T09:00:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Review started", visibility: "public" },
+      {
+        id: "h-5-4",
+        timestamp: "2025-11-08T09:30:00.000Z",
+        actor: "admissions_staff",
+        actorName: "Admissions Team",
+        action: "Application rejected",
+        description: "Thank you for your interest in SKAFF ACADEMY. After review, we're unable to offer you a place in Audio Production for this intake. You're welcome to apply again in a future intake.",
+        visibility: "public",
+      },
+    ],
+  },
+  {
+    id: "app-6",
+    reference: generateApplicationReference(6),
+    programId: "prog-backend",
+    learningMode: "online",
+    personalInformation: {
+      fullName: "Grace Ingabire",
+      email: "grace.ingabire@example.com",
+      phone: "+250 788 666 777",
+      dateOfBirth: "2002-10-30",
+      nationality: "Rwandan",
+      address: "Kacyiru, Kigali",
+    },
+    education: {
+      highestLevel: "secondary",
+      institution: "FAWE Girls School",
+      completionYear: 2024,
+    },
+    documents: [doc("doc-6a", "identification", "grace_id.pdf", "application/pdf", 610, "2026-01-15")],
+    status: "draft",
+    createdAt: "2026-01-15T18:40:00.000Z",
+    history: [{ id: "h-6-1", timestamp: "2026-01-15T18:40:00.000Z", actor: "system", action: "Application created", visibility: "internal" }],
+  },
+  {
+    id: "app-7",
+    reference: generateApplicationReference(7),
+    programId: "prog-professional-skills",
+    learningMode: "physical",
+    personalInformation: {
+      fullName: "Samuel Bizimana",
+      email: "samuel.bizimana@example.com",
+      phone: "+250 788 777 888",
+      dateOfBirth: "1996-12-01",
+      nationality: "Rwandan",
+      address: "Nyarugenge, Kigali",
+    },
+    education: {
+      highestLevel: "bachelors",
+      institution: "University of Rwanda",
+      fieldOfStudy: "Business Administration",
+      completionYear: 2018,
+    },
+    documents: [
+      doc("doc-7a", "identification", "samuel_id.pdf", "application/pdf", 700, "2025-10-01"),
+      doc("doc-7b", "passport_photo", "samuel_photo.jpg", "image/jpeg", 220, "2025-10-01"),
+      doc("doc-7c", "academic_document", "samuel_degree.pdf", "application/pdf", 990, "2025-10-01"),
+    ],
+    status: "enrolled",
+    createdAt: "2025-10-01T09:00:00.000Z",
+    submittedAt: "2025-10-01T09:10:00.000Z",
+    decision: {
+      status: "approved",
+      message: "Congratulations, Samuel — your application to Professional Skills Training has been approved.",
+      decidedAt: "2025-10-06T11:00:00.000Z",
+      decidedBy: "Admissions Team",
+    },
+    history: [
+      { id: "h-7-1", timestamp: "2025-10-01T09:00:00.000Z", actor: "system", action: "Application created", visibility: "internal" },
+      { id: "h-7-2", timestamp: "2025-10-01T09:10:00.000Z", actor: "applicant", actorName: "Samuel Bizimana", action: "Application submitted", visibility: "public" },
+      { id: "h-7-3", timestamp: "2025-10-03T09:00:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Review started", visibility: "public" },
+      {
+        id: "h-7-4",
+        timestamp: "2025-10-06T11:00:00.000Z",
+        actor: "admissions_staff",
+        actorName: "Admissions Team",
+        action: "Application approved",
+        description: "Congratulations, Samuel — your application to Professional Skills Training has been approved.",
+        visibility: "public",
+      },
+      { id: "h-7-5", timestamp: "2025-10-20T09:00:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Enrollment completed", visibility: "public" },
+    ],
+  },
+];

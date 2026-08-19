@@ -15,6 +15,7 @@ import {
   PROGRAM_CATEGORY_LABELS,
   LEARNING_MODE_LABELS,
 } from "@/lib/constants/programs";
+import { PROGRAM_IMAGES } from "@/lib/constants/media";
 import type { Program, ProgramCategory } from "@/lib/types";
 
 const CATEGORY_ICONS: Record<ProgramCategory, typeof Code2> = {
@@ -34,9 +35,11 @@ export function ProgramCard({ program, className }: ProgramCardProps) {
     <Card className={className}>
       <div className="px-(--card-spacing)">
         <ImagePlaceholder
+          src={PROGRAM_IMAGES[program.slug]}
           alt={`${program.name} training at SKAFF ACADEMY`}
           label={program.name}
           icon={CATEGORY_ICONS[program.category]}
+          sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
         />
       </div>
       <CardHeader>
@@ -64,7 +67,7 @@ export function ProgramCard({ program, className }: ProgramCardProps) {
       </CardContent>
       <CardFooter className="gap-2">
         <Button asChild size="sm">
-          <Link href="/admissions">Apply</Link>
+          <Link href={`/admissions/apply?program=${program.slug}`}>Apply</Link>
         </Button>
         <Button asChild size="sm" variant="outline">
           <Link href={`/programs/${program.slug}`}>
