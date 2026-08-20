@@ -43,11 +43,14 @@ export interface Intake {
   applicationDeadline: string;
 }
 
+export type ClassStatus = "upcoming" | "active" | "completed" | "cancelled";
+
 export interface ClassGroup {
   id: string;
   intakeId: string;
   name: string;
   capacity: number;
+  status: ClassStatus;
   homeRoom?: string;
   staffLeadId?: string;
 }

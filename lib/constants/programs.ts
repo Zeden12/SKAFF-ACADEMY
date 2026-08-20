@@ -1,4 +1,5 @@
-import type { ProgramCategory, ClassSessionMode } from "@/lib/types";
+import type { ProgramCategory, ClassSessionMode, ClassStatus } from "@/lib/types";
+import type { StatusTone } from "@/components/shared/status-badge";
 
 export const PROGRAM_CATEGORIES: ProgramCategory[] = [
   "technology",
@@ -31,6 +32,20 @@ export const LEARNING_MODE_DESCRIPTIONS: Record<ClassSessionMode, string> = {
   physical: "Delivered through physical classes at our Kigali campus.",
   online: "Supported by materials and occasional online sessions.",
   offsite: "Includes offsite or industry-based sessions where relevant.",
+};
+
+export const CLASS_STATUS_LABELS: Record<ClassStatus, string> = {
+  upcoming: "Upcoming",
+  active: "Active",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+
+export const CLASS_STATUS_TONE: Record<ClassStatus, StatusTone> = {
+  upcoming: "info",
+  active: "success",
+  completed: "neutral",
+  cancelled: "destructive",
 };
 
 // Neutral fallback copy for facts that aren't verified yet — never invent specifics here.

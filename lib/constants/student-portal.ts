@@ -76,6 +76,19 @@ export const FEE_STATUS_TONE: Record<FeeStatus, StatusTone> = {
   overdue: "destructive",
 };
 
+export const STUDENT_STATUS_LABELS: Record<StudentStatus, string> = {
+  applicant: "Applicant",
+  active: "Active",
+  pending_payment: "Pending Payment",
+  on_hold: "On Hold",
+  suspended: "Suspended",
+  completed: "Completed",
+  withdrawn: "Withdrawn",
+};
+
+/** Status changes into these states require a student-facing explanation. */
+export const STUDENT_STATUS_REQUIRES_MESSAGE: StudentStatus[] = ["on_hold", "suspended", "withdrawn"];
+
 /** Attendance rate below this is flagged with a neutral "requires attention" note — a demo
  * threshold for this UI only, not an institutional disciplinary rule. */
 export const ATTENDANCE_ATTENTION_THRESHOLD = 75;

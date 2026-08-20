@@ -40,12 +40,20 @@ export const courseService = {
     return classGroups.filter((c) => c.intakeId === intakeId);
   },
 
+  async listAllClassGroups(): Promise<ClassGroup[]> {
+    return classGroups;
+  },
+
   async getClassGroup(classGroupId: string): Promise<ClassGroup | undefined> {
     return classGroups.find((c) => c.id === classGroupId);
   },
 
   async listModulesForProgram(programId: string): Promise<Module[]> {
     return modules.filter((m) => m.programId === programId);
+  },
+
+  async listAllModules(): Promise<Module[]> {
+    return modules;
   },
 
   async getModule(moduleId: string): Promise<Module | undefined> {
