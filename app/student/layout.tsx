@@ -20,7 +20,9 @@ export default async function StudentLayout({ children }: { children: React.Reac
           profileHref="/student/profile"
         />
         <main className="flex-1 space-y-4 p-4 sm:p-6">
-          {current && <StudentStatusBanner status={current.profile.status} />}
+          {current && (
+            <StudentStatusBanner status={current.profile.status} customMessage={current.profile.statusMessage} />
+          )}
           {children}
         </main>
       </div>

@@ -49,4 +49,29 @@ export const scheduleService = {
   async getSession(sessionId: string): Promise<ClassSession | undefined> {
     return classSessions.find((s) => s.id === sessionId);
   },
+
+  async listAllSessions(): Promise<ClassSession[]> {
+    return [...classSessions].sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+  },
+
+  async listSessionsToday(): Promise<ClassSession[]> {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const endOfDay = startOfDay + 24 * 60 * 60 * 1000;
+    const all = await scheduleService.listAllSessions();
+    return all.filter((s) => {
+      const startsAt = new Date(s.startsAt).getTime();
+      return startsAt >= startOfDay && startsAt < endOfDay;
+    });
+  },
+
+  async listSessionsThisWeek(): Promise<ClassSession[]> {
+    const now = Date.now();
+    const weekFromNow = now + 7 * 24 * 60 * 60 * 1000;
+    const all = await scheduleService.listAllSessions();
+    return all.filter((s) => {
+      const startsAt = new Date(s.startsAt).getTime();
+      return startsAt >= now && startsAt < weekFromNow;
+    });
+  },
 };

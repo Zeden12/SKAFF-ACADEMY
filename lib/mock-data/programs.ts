@@ -296,6 +296,7 @@ export const classGroups: ClassGroup[] = [
     intakeId: "intake-1",
     name: "FSD-2026-A",
     capacity: 25,
+    status: "active",
     homeRoom: "Lab 3",
     staffLeadId: "staff-1",
   },
@@ -304,6 +305,7 @@ export const classGroups: ClassGroup[] = [
     intakeId: "intake-2",
     name: "UIUX-2026-A",
     capacity: 20,
+    status: "upcoming",
     homeRoom: "Studio 1",
   },
 ];

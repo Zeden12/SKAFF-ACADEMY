@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { assignmentsService, type SubmitAssignmentInput } from "@/lib/services/assignments-service";
 import { documentsService } from "@/lib/services/documents-service";
-import { studentService } from "@/lib/services/student-service";
-import type { DocumentRequestType, StudentProfile, User } from "@/lib/types";
+import { studentService, ADMIN_STATUS_ACTOR } from "@/lib/services/student-service";
+import type { DocumentRequestType, StudentProfile, StudentStatus, User } from "@/lib/types";
 
 export async function submitAssignmentAction(
   assignmentId: string,
@@ -24,6 +24,22 @@ export async function createDocumentRequestAction(
 ): Promise<void> {
   await documentsService.createRequest({ studentId, type, reason });
   revalidatePath("/student/documents");
+}
+
+export async function updateStudentStatusAction(
+  studentId: string,
+  newStatus: StudentStatus,
+  input: { publicMessage?: string; internalNote?: string }
+): Promise<void> {
+  await studentService.updateStudentStatus(studentId, newStatus, {
+    actorName: ADMIN_STATUS_ACTOR,
+    publicMessage: input.publicMessage,
+    internalNote: input.internalNote,
+  });
+  revalidatePath("/admin/students");
+  revalidatePath(`/admin/students/${studentId}`);
+  revalidatePath("/admin");
+  revalidatePath("/student");
 }
 
 export async function updateProfileContactAction(

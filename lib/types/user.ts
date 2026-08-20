@@ -40,6 +40,27 @@ export interface StudentProfile {
   emergencyContactName?: string;
   emergencyContactPhone?: string;
   enrolledAt: string;
+  /** Student-facing explanation for the current status (e.g. why they're on hold). */
+  statusMessage?: string;
+  /** Staff-only note about the current status — must never be shown on student-facing pages. */
+  internalNotes?: string;
+}
+
+export type StudentStatusActor = "admin_staff" | "system";
+
+export interface StudentStatusHistoryEntry {
+  id: string;
+  studentId: string;
+  timestamp: string;
+  actor: StudentStatusActor;
+  /** Placeholder actor name until real staff accounts exist, e.g. "Academic Office". */
+  actorName: string;
+  previousStatus: StudentStatus;
+  newStatus: StudentStatus;
+  /** Shown to the student, if the change included an explanation. */
+  publicMessage?: string;
+  /** Staff-only — must never be shown on student-facing pages. */
+  internalNote?: string;
 }
 
 export interface StaffProfile {

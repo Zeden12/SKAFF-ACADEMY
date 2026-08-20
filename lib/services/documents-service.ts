@@ -18,6 +18,12 @@ export const documentsService = {
     );
   },
 
+  async listAllRequests(): Promise<DocumentRequest[]> {
+    return [...documentRequests].sort(
+      (a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime()
+    );
+  },
+
   async createRequest(input: CreateDocumentRequestInput): Promise<DocumentRequest> {
     const request: DocumentRequest = {
       id: `doc-req-${documentRequests.length + 1}`,

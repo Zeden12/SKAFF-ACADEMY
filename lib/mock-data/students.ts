@@ -67,6 +67,8 @@ export const studentProfiles: StudentProfile[] = [
     dateOfBirth: "2000-09-18",
     nationality: "Rwandan",
     enrolledAt: "2026-03-02",
+    statusMessage:
+      "Your account has a pending payment status. Some academic services may be limited until your payment is updated.",
   },
   {
     id: "student-3",
@@ -79,6 +81,9 @@ export const studentProfiles: StudentProfile[] = [
     dateOfBirth: "1999-02-25",
     nationality: "Rwandan",
     enrolledAt: "2026-02-02",
+    statusMessage:
+      "Your account is on hold pending confirmation of your updated academic documents. Please contact the Academy office.",
+    internalNotes: "Awaiting updated national ID copy — flagged by registrar on document review.",
   },
   {
     id: "student-4",
@@ -91,5 +96,7 @@ export const studentProfiles: StudentProfile[] = [
     dateOfBirth: "2000-07-03",
     nationality: "Rwandan",
     enrolledAt: "2026-02-02",
+    statusMessage: "Your account is currently suspended. Please contact SKAFF Academy administration for resolution.",
+    internalNotes: "Suspended after repeated missed payments beyond the grace period. Review before reinstating.",
   },
 ];
