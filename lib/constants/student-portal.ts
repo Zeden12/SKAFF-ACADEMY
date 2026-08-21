@@ -12,6 +12,7 @@ export const SUBMISSION_STATUS_LABELS: Record<SubmissionStatus, string> = {
   not_submitted: "Not Submitted",
   submitted: "Submitted",
   late: "Submitted Late",
+  reviewed: "Reviewed",
   graded: "Graded",
 };
 
@@ -19,6 +20,7 @@ export const SUBMISSION_STATUS_TONE: Record<SubmissionStatus, StatusTone> = {
   not_submitted: "neutral",
   submitted: "info",
   late: "warning",
+  reviewed: "info",
   graded: "success",
 };
 

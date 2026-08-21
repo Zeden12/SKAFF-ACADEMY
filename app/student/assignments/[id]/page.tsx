@@ -27,7 +27,9 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
   ]);
 
   const status = submission?.status ?? "not_submitted";
-  const canSubmit = status !== "graded";
+  const hasBeenGraded = status === "graded";
+  const canSubmit = status === "not_submitted" || (assignment.allowResubmission && !hasBeenGraded);
+  const hasReviewFeedback = submission && (submission.feedback || submission.score !== undefined);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -63,6 +65,12 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
               <p className="text-xs text-muted-foreground">Max Score</p>
               <p className="text-sm font-medium text-foreground">{assignment.maxScore} points</p>
             </div>
+            {assignment.attachmentFileName && (
+              <div className="sm:col-span-2">
+                <p className="text-xs text-muted-foreground">Reference Attachment</p>
+                <p className="text-sm font-medium text-foreground">{assignment.attachmentFileName}</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -78,11 +86,13 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
               <p className="text-xs text-muted-foreground">Submitted {formatDate(submission.submittedAt)}</p>
             )}
             {submission.note && <p className="text-sm text-muted-foreground">Note: {submission.note}</p>}
-            {submission.status === "graded" && (
+            {hasReviewFeedback && (
               <div className="mt-3 rounded-md border border-success/30 bg-success/5 p-3">
-                <p className="text-sm font-semibold text-foreground">
-                  Score: {submission.score}/{assignment.maxScore}
-                </p>
+                {submission.score !== undefined && (
+                  <p className="text-sm font-semibold text-foreground">
+                    Score: {submission.score}/{assignment.maxScore}
+                  </p>
+                )}
                 {submission.feedback && <p className="mt-1 text-sm text-muted-foreground">{submission.feedback}</p>}
               </div>
             )}
@@ -90,7 +100,7 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
         </Card>
       )}
 
-      {canSubmit && (
+      {canSubmit ? (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">
@@ -115,6 +125,12 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
             />
           </CardContent>
         </Card>
+      ) : (
+        !hasBeenGraded && (
+          <p className="text-sm text-muted-foreground">
+            Resubmission is not allowed for this assignment.
+          </p>
+        )
       )}
     </div>
   );

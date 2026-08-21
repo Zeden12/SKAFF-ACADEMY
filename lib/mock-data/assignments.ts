@@ -11,6 +11,7 @@ export const assignments: Assignment[] = [
     status: "closed",
     dueAt: relativeDay(-17, 23, 59),
     maxScore: 100,
+    allowResubmission: false,
     createdByStaffId: "staff-1",
   },
   {
@@ -22,6 +23,7 @@ export const assignments: Assignment[] = [
     status: "closed",
     dueAt: relativeDay(-9, 23, 59),
     maxScore: 100,
+    allowResubmission: false,
     createdByStaffId: "staff-1",
   },
   {
@@ -33,6 +35,9 @@ export const assignments: Assignment[] = [
     status: "published",
     dueAt: relativeDay(3, 23, 59),
     maxScore: 100,
+    allowResubmission: true,
+    attachmentFileName: "component-library-starter.zip",
+    attachmentFileSizeKb: 84,
     createdByStaffId: "staff-1",
   },
   {
@@ -44,6 +49,7 @@ export const assignments: Assignment[] = [
     status: "published",
     dueAt: relativeDay(12, 23, 59),
     maxScore: 100,
+    allowResubmission: true,
     createdByStaffId: "staff-1",
   },
 ];
@@ -61,12 +67,13 @@ export const submissions: Submission[] = [
     score: 88,
     feedback: "Clean structure and great use of semantic HTML. Watch your heading hierarchy.",
     gradedByStaffId: "staff-1",
+    reviewedAt: relativeDay(-16, 10),
   },
   {
     id: "sub-2",
     assignmentId: "asg-2",
     studentId: "student-1",
-    status: "late",
+    status: "graded",
     fileName: "js-fundamentals-homework.js",
     fileType: "text/javascript",
     fileSizeKb: 18,
@@ -74,6 +81,7 @@ export const submissions: Submission[] = [
     score: 74,
     feedback: "Good logic overall, but a couple of edge cases weren't handled. Submitted a day late.",
     gradedByStaffId: "staff-1",
+    reviewedAt: relativeDay(-7, 9),
   },
   {
     id: "sub-3",
