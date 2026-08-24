@@ -10,6 +10,8 @@ export const documentRequests: DocumentRequest[] = [
     reason: "Needed for a visa application.",
     requestedAt: relativeDay(-15),
     fulfilledAt: relativeDay(-12),
+    documentFileName: "proof-of-enrollment-SKF-2026-0001.pdf",
+    processedByStaffId: "staff-1",
   },
   {
     id: "doc-req-2",
@@ -17,5 +19,6 @@ export const documentRequests: DocumentRequest[] = [
     type: "results_statement",
     status: "under_review",
     requestedAt: relativeDay(-3),
+    processedByStaffId: "staff-1",
   },
 ];

@@ -13,7 +13,10 @@ export default async function StudentAnnouncementsPage() {
     return <PageHeader title="Announcements" description="No student account found." />;
   }
 
-  const announcements = await announcementService.listAnnouncementsForStudentProgram(current.profile.programId);
+  const announcements = await announcementService.listAnnouncementsForStudentProgram(
+    current.profile.programId,
+    current.profile.classGroupId
+  );
 
   return (
     <div className="space-y-6">
@@ -33,13 +36,19 @@ export default async function StudentAnnouncementsPage() {
                     label={ANNOUNCEMENT_CATEGORY_LABELS[announcement.category]}
                   />
                   {announcement.pinned && <StatusBadge status="pinned" tone="warning" label="Pinned" />}
-                  {announcement.programId && <StatusBadge status="program" tone="neutral" label="Your Program" />}
+                  {announcement.classGroupId ? (
+                    <StatusBadge status="class" tone="neutral" label="Your Class" />
+                  ) : (
+                    announcement.programId && <StatusBadge status="program" tone="neutral" label="Your Program" />
+                  )}
                 </div>
                 <CardTitle className="text-sm">{announcement.title}</CardTitle>
                 <CardDescription>{announcement.body}</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground">Published {formatDate(announcement.publishedAt)}</p>
+                <p className="text-xs text-muted-foreground">
+                  Published {formatDate(announcement.publishedAt ?? announcement.createdAt)}
+                </p>
               </CardContent>
             </Card>
           ))}

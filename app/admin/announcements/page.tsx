@@ -1,20 +1,63 @@
+import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatusBadge } from "@/components/shared/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { AnnouncementStatusBadge } from "@/components/shared/announcement-status-badge";
 import { Button } from "@/components/ui/button";
+import { ANNOUNCEMENT_AUDIENCE_LABELS } from "@/lib/constants/communication";
 import { announcementService } from "@/lib/services/announcement-service";
-import type { Announcement } from "@/lib/types";
+import { courseService } from "@/lib/services/course-service";
+import { formatDate } from "@/lib/utils";
+import type { Announcement, AnnouncementAudience, AnnouncementPublicationStatus } from "@/lib/types";
+import { AnnouncementsFilters } from "./announcements-filters";
 
-export default async function AdminAnnouncementsPage() {
-  const announcements = await announcementService.listAnnouncements();
+interface AnnouncementRow extends Announcement {
+  targetLabel: string;
+}
 
-  const columns: DataTableColumn<Announcement>[] = [
+interface AdminAnnouncementsPageProps {
+  searchParams: Promise<{ q?: string; status?: string; audience?: string }>;
+}
+
+export default async function AdminAnnouncementsPage({ searchParams }: AdminAnnouncementsPageProps) {
+  const { q, status, audience } = await searchParams;
+
+  const [announcements, programs, classGroups] = await Promise.all([
+    announcementService.listAllAnnouncements({
+      query: q,
+      status: status as AnnouncementPublicationStatus | undefined,
+      audience: audience as AnnouncementAudience | undefined,
+    }),
+    courseService.listPrograms(),
+    courseService.listAllClassGroups(),
+  ]);
+
+  const rows: AnnouncementRow[] = announcements.map((announcement) => {
+    let targetLabel = ANNOUNCEMENT_AUDIENCE_LABELS[announcement.audience];
+    if (announcement.classGroupId) {
+      targetLabel = classGroups.find((c) => c.id === announcement.classGroupId)?.name ?? targetLabel;
+    } else if (announcement.programId) {
+      targetLabel = programs.find((p) => p.id === announcement.programId)?.name ?? targetLabel;
+    }
+    return { ...announcement, targetLabel };
+  });
+
+  const columns: DataTableColumn<AnnouncementRow>[] = [
     { header: "Title", accessor: (row) => row.title },
-    { header: "Audience", accessor: (row) => row.audience },
-    { header: "Published", accessor: (row) => row.publishedAt },
+    { header: "Target", accessor: (row) => row.targetLabel },
     {
       header: "Pinned",
       accessor: (row) => (row.pinned ? <StatusBadge status="pinned" tone="info" label="Pinned" /> : "—"),
+    },
+    { header: "Status", accessor: (row) => <AnnouncementStatusBadge status={row.status} /> },
+    { header: "Created", accessor: (row) => formatDate(row.createdAt) },
+    {
+      header: "",
+      accessor: (row) => (
+        <Link href={`/admin/announcements/${row.id}`} className="text-sm font-medium text-primary hover:underline">
+          View
+        </Link>
+      ),
     },
   ];
 
@@ -23,9 +66,16 @@ export default async function AdminAnnouncementsPage() {
       <PageHeader
         title="Announcements"
         description="Publish campus-wide or audience-specific announcements."
-        actions={<Button disabled>New Announcement</Button>}
+        actions={
+          <Button asChild>
+            <Link href="/admin/announcements/new">New Announcement</Link>
+          </Button>
+        }
       />
-      <DataTable columns={columns} data={announcements} keyExtractor={(row) => row.id} />
+
+      <AnnouncementsFilters />
+
+      <DataTable columns={columns} data={rows} keyExtractor={(row) => row.id} emptyTitle="No announcements match these filters" />
     </div>
   );
 }

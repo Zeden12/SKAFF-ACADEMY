@@ -24,6 +24,7 @@ export async function createDocumentRequestAction(
 ): Promise<void> {
   await documentsService.createRequest({ studentId, type, reason });
   revalidatePath("/student/documents");
+  revalidatePath("/admin/documents");
 }
 
 export async function updateStudentStatusAction(

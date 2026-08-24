@@ -44,7 +44,7 @@ export default async function AnnouncementsPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  {formatDate(announcement.publishedAt)}
+                  {formatDate(announcement.publishedAt ?? announcement.createdAt)}
                 </p>
               </CardContent>
             </Card>

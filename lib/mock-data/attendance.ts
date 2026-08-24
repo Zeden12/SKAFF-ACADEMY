@@ -1,7 +1,7 @@
 import type { AttendanceRecord } from "@/lib/types";
 import { relativeDay } from "./date-helpers";
 
-/** One record per past class-1 session, for student-1. */
+/** class-1 roster is student-1, student-3, student-4. Sessions 1-6 are past (completed). */
 export const attendanceRecords: AttendanceRecord[] = [
   {
     id: "att-1",
@@ -53,4 +53,98 @@ export const attendanceRecords: AttendanceRecord[] = [
     recordedByStaffId: "staff-1",
     recordedAt: relativeDay(-2, 12),
   },
+  {
+    id: "att-7",
+    classSessionId: "session-1",
+    studentId: "student-3",
+    status: "present",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-21, 12),
+  },
+  {
+    id: "att-8",
+    classSessionId: "session-2",
+    studentId: "student-3",
+    status: "absent",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-18, 12),
+    note: "Reported illness.",
+  },
+  {
+    id: "att-9",
+    classSessionId: "session-3",
+    studentId: "student-3",
+    status: "excused",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-14, 12),
+    note: "Approved absence — medical appointment.",
+  },
+  {
+    id: "att-10",
+    classSessionId: "session-4",
+    studentId: "student-3",
+    status: "present",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-10, 12),
+  },
+  {
+    id: "att-11",
+    classSessionId: "session-5",
+    studentId: "student-3",
+    status: "present",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-6, 19),
+  },
+  {
+    id: "att-12",
+    classSessionId: "session-6",
+    studentId: "student-3",
+    status: "absent",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-2, 12),
+    note: "No message received from student.",
+  },
+  {
+    id: "att-13",
+    classSessionId: "session-1",
+    studentId: "student-4",
+    status: "present",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-21, 12),
+  },
+  {
+    id: "att-14",
+    classSessionId: "session-2",
+    studentId: "student-4",
+    status: "present",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-18, 12),
+  },
+  {
+    id: "att-15",
+    classSessionId: "session-3",
+    studentId: "student-4",
+    status: "late",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-14, 12),
+    note: "Arrived 15 minutes late.",
+  },
+  {
+    id: "att-16",
+    classSessionId: "session-4",
+    studentId: "student-4",
+    status: "absent",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-10, 12),
+    note: "No message received from student.",
+  },
+  {
+    id: "att-17",
+    classSessionId: "session-5",
+    studentId: "student-4",
+    status: "present",
+    recordedByStaffId: "staff-1",
+    recordedAt: relativeDay(-6, 19),
+  },
+  // session-6 intentionally left unmarked for student-4 to exercise the "not yet recorded" state.
 ];

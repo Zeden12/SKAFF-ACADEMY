@@ -37,6 +37,15 @@ export const scheduleService = {
     return sessions.filter((s) => new Date(s.endsAt).getTime() < now);
   },
 
+  /** Sessions already underway or finished, most recent first — the ones attendance can be taken for. */
+  async listSessionsEligibleForAttendance(classGroupId: string): Promise<ClassSession[]> {
+    const now = Date.now();
+    const sessions = await scheduleService.listSessionsForClassGroup(classGroupId);
+    return [...sessions.filter((s) => new Date(s.startsAt).getTime() <= now)].sort(
+      (a, b) => new Date(b.startsAt).getTime() - new Date(a.startsAt).getTime()
+    );
+  },
+
   async getNextSession(classGroupId: string): Promise<ClassSession | undefined> {
     const upcoming = await scheduleService.listUpcomingSessions(classGroupId);
     return upcoming[0];

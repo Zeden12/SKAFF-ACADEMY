@@ -7,17 +7,24 @@ export type AnnouncementCategory =
   | "programs"
   | "general";
 
+export type AnnouncementPublicationStatus = "draft" | "published" | "archived";
+
 export interface Announcement {
   id: string;
   title: string;
   body: string;
   category: AnnouncementCategory;
   audience: AnnouncementAudience;
-  publishedAt: string;
+  status: AnnouncementPublicationStatus;
+  createdAt: string;
+  /** Set only once the announcement is published. */
+  publishedAt?: string;
   authorStaffId: string;
   pinned?: boolean;
   /** Set to target a specific program's students rather than all students. */
   programId?: string;
+  /** Set to narrow further to one class within that program. */
+  classGroupId?: string;
 }
 
 export type DocumentRequestType =
@@ -45,7 +52,13 @@ export interface DocumentRequest {
   reason?: string;
   requestedAt: string;
   fulfilledAt?: string;
-  notes?: string;
+  /** Student-facing message — e.g. a rejection reason. Safe to show on student pages. */
+  studentMessage?: string;
+  /** Staff-only — must never be shown on student-facing pages. */
+  internalNotes?: string;
+  /** Mock filename once marked ready — metadata only, no real file is generated. */
+  documentFileName?: string;
+  processedByStaffId?: string;
 }
 
 export type NotificationType =
