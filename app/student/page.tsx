@@ -28,7 +28,7 @@ export default async function StudentDashboardPage() {
     courseService.getProgram(student.programId),
     courseService.getIntake(student.intakeId),
     student.classGroupId ? courseService.getClassGroup(student.classGroupId) : undefined,
-    announcementService.listAnnouncementsForStudentProgram(student.programId),
+    announcementService.listAnnouncementsForStudentProgram(student.programId, student.classGroupId),
   ]);
 
   const classGroupId = student.classGroupId;

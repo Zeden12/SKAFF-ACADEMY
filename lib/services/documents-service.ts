@@ -1,10 +1,20 @@
-import type { DocumentRequest, DocumentRequestType, StudentStatus } from "@/lib/types";
+import type { DocumentRequest, DocumentRequestStatus, DocumentRequestType, StudentStatus } from "@/lib/types";
 import { documentRequests } from "@/lib/mock-data/document-requests";
 
 export interface CreateDocumentRequestInput {
   studentId: string;
   type: DocumentRequestType;
   reason?: string;
+}
+
+export interface UpdateDocumentRequestStatusInput {
+  status: DocumentRequestStatus;
+  processedByStaffId: string;
+  /** Student-facing message — required when rejecting. */
+  studentMessage?: string;
+  /** Mock filename metadata once marked ready. */
+  documentFileName?: string;
+  internalNotes?: string;
 }
 
 /**
@@ -22,6 +32,30 @@ export const documentsService = {
     return [...documentRequests].sort(
       (a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime()
     );
+  },
+
+  async getRequest(requestId: string): Promise<DocumentRequest | undefined> {
+    return documentRequests.find((d) => d.id === requestId);
+  },
+
+  async updateRequestStatus(requestId: string, input: UpdateDocumentRequestStatusInput): Promise<DocumentRequest> {
+    const request = documentRequests.find((d) => d.id === requestId);
+    if (!request) throw new Error(`Document request ${requestId} was not found.`);
+
+    if (input.status === "rejected" && !input.studentMessage?.trim()) {
+      throw new Error("A student-facing reason is required when rejecting a request.");
+    }
+
+    request.status = input.status;
+    request.processedByStaffId = input.processedByStaffId;
+    if (input.studentMessage !== undefined) request.studentMessage = input.studentMessage.trim() || undefined;
+    if (input.internalNotes !== undefined) request.internalNotes = input.internalNotes.trim() || undefined;
+    if (input.status === "ready") {
+      request.documentFileName = input.documentFileName?.trim() || `${request.type}-${request.id}.pdf`;
+      request.fulfilledAt = new Date().toISOString();
+    }
+
+    return request;
   },
 
   async createRequest(input: CreateDocumentRequestInput): Promise<DocumentRequest> {

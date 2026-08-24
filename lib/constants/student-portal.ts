@@ -6,6 +6,9 @@ import type {
   DocumentRequestStatus,
   FeeStatus,
   StudentStatus,
+  ResultPublicationStatus,
+  ResultGrade,
+  PaymentMethod,
 } from "@/lib/types";
 
 export const SUBMISSION_STATUS_LABELS: Record<SubmissionStatus, string> = {
@@ -90,6 +93,33 @@ export const STUDENT_STATUS_LABELS: Record<StudentStatus, string> = {
 
 /** Status changes into these states require a student-facing explanation. */
 export const STUDENT_STATUS_REQUIRES_MESSAGE: StudentStatus[] = ["on_hold", "suspended", "withdrawn"];
+
+export const RESULT_STATUS_LABELS: Record<ResultPublicationStatus, string> = {
+  draft: "Draft",
+  published: "Published",
+};
+
+export const RESULT_STATUS_TONE: Record<ResultPublicationStatus, StatusTone> = {
+  draft: "neutral",
+  published: "success",
+};
+
+export const RESULT_GRADE_LABELS: Record<ResultGrade, string> = {
+  A: "A",
+  B: "B",
+  C: "C",
+  D: "D",
+  E: "E",
+  F: "F",
+  incomplete: "Incomplete",
+};
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cash: "Cash",
+  mobile_money: "Mobile Money",
+  bank_transfer: "Bank Transfer",
+  card: "Card",
+};
 
 /** Attendance rate below this is flagged with a neutral "requires attention" note — a demo
  * threshold for this UI only, not an institutional disciplinary rule. */

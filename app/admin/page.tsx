@@ -6,6 +6,8 @@ import {
   AlertTriangle,
   CalendarDays,
   FileText,
+  GraduationCap,
+  Wallet,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { AdminMetricCard } from "@/components/shared/admin-metric-card";
@@ -82,6 +84,19 @@ export default async function AdminDashboardPage() {
           value={summary.pendingDocumentRequests}
           icon={FileText}
           href="/admin/documents"
+        />
+        <AdminMetricCard
+          label="Draft Results Awaiting Publication"
+          value={summary.draftAssessmentsAwaitingPublication}
+          icon={GraduationCap}
+          href="/admin/results?status=draft"
+        />
+        <AdminMetricCard
+          label="Students with Overdue Fees"
+          value={summary.studentsWithOverdueFees}
+          icon={Wallet}
+          tone={summary.studentsWithOverdueFees > 0 ? "warning" : "default"}
+          href="/admin/fees?status=overdue"
         />
       </div>
 

@@ -11,17 +11,33 @@ export interface AttendanceRecord {
 }
 
 export type ResultGrade = "A" | "B" | "C" | "D" | "E" | "F" | "incomplete";
+export type ResultPublicationStatus = "draft" | "published";
 
 export interface Result {
   id: string;
+  /** Groups every student's row created together as one assessment. */
+  assessmentId: string;
   studentId: string;
+  classGroupId: string;
   moduleId: string;
   assessmentName: string;
   score: number;
   maxScore: number;
-  grade: ResultGrade;
+  grade?: ResultGrade;
   feedback?: string;
+  status: ResultPublicationStatus;
   publishedAt?: string;
+  recordedByStaffId: string;
+}
+
+export interface ResultHistoryEntry {
+  id: string;
+  resultId: string;
+  timestamp: string;
+  actorName: string;
+  previousScore: number;
+  newScore: number;
+  reason?: string;
 }
 
 export type FeeStatus = "paid" | "partially_paid" | "pending" | "overdue";
@@ -51,4 +67,7 @@ export interface PaymentTransaction {
   method: PaymentMethod;
   reference: string;
   paidAt: string;
+  note?: string;
+  /** Unset for historical/imported payments recorded before this admin workflow existed. */
+  recordedByStaffId?: string;
 }

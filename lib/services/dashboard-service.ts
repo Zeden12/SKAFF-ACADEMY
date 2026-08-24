@@ -3,6 +3,8 @@ import { courseService } from "@/lib/services/course-service";
 import { admissionsService } from "@/lib/services/admissions-service";
 import { documentsService } from "@/lib/services/documents-service";
 import { scheduleService } from "@/lib/services/schedule-service";
+import { resultsService } from "@/lib/services/results-service";
+import { feesService } from "@/lib/services/fees-service";
 import type { StudentStatus } from "@/lib/types";
 
 export interface ProgramStudentCount {
@@ -24,6 +26,8 @@ export interface AdminDashboardSummary {
   pendingDocumentRequests: number;
   sessionsTodayCount: number;
   sessionsThisWeekCount: number;
+  draftAssessmentsAwaitingPublication: number;
+  studentsWithOverdueFees: number;
   studentsByProgram: ProgramStudentCount[];
   studentStatusDistribution: StudentStatusCount[];
 }
@@ -37,16 +41,27 @@ const ATTENTION_STATUSES: StudentStatus[] = ["on_hold", "suspended"];
  */
 export const dashboardService = {
   async getSummary(): Promise<AdminDashboardSummary> {
-    const [students, classGroups, programs, applicationCounts, documentRequests, sessionsToday, sessionsThisWeek] =
-      await Promise.all([
-        studentService.listStudents(),
-        courseService.listAllClassGroups(),
-        courseService.listPrograms(),
-        admissionsService.getSummaryCounts(),
-        documentsService.listAllRequests(),
-        scheduleService.listSessionsToday(),
-        scheduleService.listSessionsThisWeek(),
-      ]);
+    const [
+      students,
+      classGroups,
+      programs,
+      applicationCounts,
+      documentRequests,
+      sessionsToday,
+      sessionsThisWeek,
+      draftAssessments,
+      feeRecords,
+    ] = await Promise.all([
+      studentService.listStudents(),
+      courseService.listAllClassGroups(),
+      courseService.listPrograms(),
+      admissionsService.getSummaryCounts(),
+      documentsService.listAllRequests(),
+      scheduleService.listSessionsToday(),
+      scheduleService.listSessionsThisWeek(),
+      resultsService.listAssessments({ status: "draft" }),
+      feesService.listAllFeeRecords({ status: "overdue" }),
+    ]);
 
     const activeStudents = students.filter((s) => s.status === "active").length;
     const onHoldOrSuspendedStudents = students.filter((s) => ATTENTION_STATUSES.includes(s.status)).length;
@@ -85,6 +100,8 @@ export const dashboardService = {
       pendingDocumentRequests,
       sessionsTodayCount: sessionsToday.length,
       sessionsThisWeekCount: sessionsThisWeek.length,
+      draftAssessmentsAwaitingPublication: draftAssessments.length,
+      studentsWithOverdueFees: new Set(feeRecords.map((f) => f.studentId)).size,
       studentsByProgram,
       studentStatusDistribution,
     };
