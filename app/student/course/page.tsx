@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { LEARNING_MODE_LABELS } from "@/lib/constants/programs";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { scheduleService, deriveModuleState, type ModuleProgressState } from "@/lib/services/schedule-service";
 import { materialsService } from "@/lib/services/materials-service";
 import { assignmentsService } from "@/lib/services/assignments-service";
@@ -18,14 +19,12 @@ export default async function StudentCoursePage() {
   }
   const { profile: student } = current;
 
-  const [program, classGroup, modules] = await Promise.all([
-    courseService.getProgram(student.programId),
-    student.classGroupId ? courseService.getClassGroup(student.classGroupId) : undefined,
-    courseService.listModulesForProgram(student.programId),
-  ]);
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(student.id);
+  const { program, classGroup } = enrollmentContext ?? {};
+  const modules = program ? await courseService.listModulesForProgram(program.id) : [];
 
   const trainer = classGroup?.staffLeadId ? await courseService.getStaffMember(classGroup.staffLeadId) : undefined;
-  const classGroupId = student.classGroupId;
+  const classGroupId = classGroup?.id;
   const allSessions = classGroupId ? await scheduleService.listSessionsForClassGroup(classGroupId) : [];
   const upcomingSessions = classGroupId ? await scheduleService.listUpcomingSessions(classGroupId) : [];
 

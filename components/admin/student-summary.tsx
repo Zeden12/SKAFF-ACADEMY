@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StudentStatusBadge } from "@/components/shared/student-status-badge";
-import type { ClassGroup, Intake, Program, StudentProfile, User } from "@/lib/types";
+import { ENROLLMENT_STATUS_LABELS } from "@/lib/constants/student-portal";
+import type { ClassGroup, EnrollmentStatus, Intake, Program, StudentProfile, User } from "@/lib/types";
 
 interface StudentSummaryProps {
   user: User;
@@ -9,6 +10,8 @@ interface StudentSummaryProps {
   program?: Program;
   intake?: Intake;
   classGroup?: ClassGroup;
+  /** Sourced from the student's active Enrollment record, not a StudentProfile field. */
+  enrollmentStatus?: EnrollmentStatus;
 }
 
 function initials(name: string): string {
@@ -20,7 +23,7 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-export function StudentSummary({ user, student, program, intake, classGroup }: StudentSummaryProps) {
+export function StudentSummary({ user, student, program, intake, classGroup, enrollmentStatus }: StudentSummaryProps) {
   return (
     <Card>
       <CardHeader>
@@ -44,6 +47,7 @@ export function StudentSummary({ user, student, program, intake, classGroup }: S
         <Field label="Phone" value={user.phone ?? "—"} />
         <Field label="Address" value={student.address ?? "—"} />
         <Field label="Enrolled Since" value={new Date(student.enrolledAt).toLocaleDateString()} />
+        {enrollmentStatus && <Field label="Enrollment Status" value={ENROLLMENT_STATUS_LABELS[enrollmentStatus]} />}
       </CardContent>
     </Card>
   );

@@ -1,5 +1,6 @@
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { admissionsService } from "@/lib/services/admissions-service";
 import { documentsService } from "@/lib/services/documents-service";
 import { scheduleService } from "@/lib/services/schedule-service";
@@ -51,6 +52,7 @@ export const dashboardService = {
       sessionsThisWeek,
       draftAssessments,
       feeRecords,
+      enrollmentContexts,
     ] = await Promise.all([
       studentService.listStudents(),
       courseService.listAllClassGroups(),
@@ -61,6 +63,7 @@ export const dashboardService = {
       scheduleService.listSessionsThisWeek(),
       resultsService.listAssessments({ status: "draft" }),
       feesService.listAllFeeRecords({ status: "overdue" }),
+      enrollmentService.listActiveEnrollmentContexts(),
     ]);
 
     const activeStudents = students.filter((s) => s.status === "active").length;
@@ -75,7 +78,7 @@ export const dashboardService = {
       .map((program) => ({
         programId: program.id,
         programName: program.name,
-        count: students.filter((s) => s.programId === program.id).length,
+        count: enrollmentContexts.filter((ctx) => ctx.program?.id === program.id).length,
       }))
       .filter((row) => row.count > 0)
       .sort((a, b) => b.count - a.count);

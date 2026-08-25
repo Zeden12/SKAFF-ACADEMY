@@ -25,6 +25,7 @@ export default async function StatusDetailPage({ params }: StatusDetailPageProps
   }
 
   const program = await courseService.getProgram(application.programId);
+  const intake = await courseService.getIntake(application.intakeId);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
@@ -36,6 +37,7 @@ export default async function StatusDetailPage({ params }: StatusDetailPageProps
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {program?.name ?? "—"}
+            {intake && ` · ${intake.label}`}
             {application.learningMode && ` · ${LEARNING_MODE_LABELS[application.learningMode]}`}
           </p>
           {application.submittedAt && (

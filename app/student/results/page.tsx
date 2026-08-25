@@ -3,6 +3,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { resultsService } from "@/lib/services/results-service";
 import { formatDate } from "@/lib/utils";
 
@@ -12,8 +13,9 @@ export default async function StudentResultsPage() {
     return <PageHeader title="Results" description="No student account found." />;
   }
 
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(current.profile.id);
   const [modules, results, summary] = await Promise.all([
-    courseService.listModulesForProgram(current.profile.programId),
+    enrollmentContext?.program ? courseService.listModulesForProgram(enrollmentContext.program.id) : Promise.resolve([]),
     resultsService.listResultsForStudent(current.profile.id),
     resultsService.getResultsSummary(current.profile.id),
   ]);

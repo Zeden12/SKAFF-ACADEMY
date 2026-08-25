@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/shared/page-header";
+import { ApplicationsClosedState } from "@/components/shared/applications-closed-state";
 import { courseService } from "@/lib/services/course-service";
 import { ApplicationWizard } from "./application-wizard";
 
@@ -17,9 +18,24 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
     courseService.listAllIntakes(),
   ]);
 
-  const initialProgramId = presetSlug
-    ? programs.find((p) => p.slug === presetSlug)?.id
-    : undefined;
+  const presetProgram = presetSlug ? programs.find((p) => p.slug === presetSlug) : undefined;
+  const initialProgramId = presetProgram?.id;
+
+  // When arriving from a specific program's Apply button, gate on that program having an open
+  // intake up front — rather than letting the applicant reach the form and get stuck.
+  if (presetProgram) {
+    const hasOpenIntake = await courseService.getLatestOpenIntakeForProgram(presetProgram.id);
+    if (!hasOpenIntake) {
+      return (
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+          <PageHeader title="Apply for Admission" description={`Applying to ${presetProgram.name}.`} />
+          <div className="mt-8">
+            <ApplicationsClosedState programName={presetProgram.name} programSlug={presetProgram.slug} />
+          </div>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">

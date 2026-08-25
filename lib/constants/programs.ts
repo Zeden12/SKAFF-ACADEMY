@@ -1,25 +1,18 @@
 import type { ProgramCategory, ClassSessionMode, ClassStatus } from "@/lib/types";
 import type { StatusTone } from "@/components/shared/status-badge";
 
-export const PROGRAM_CATEGORIES: ProgramCategory[] = [
-  "technology",
-  "digital_business",
-  "creative_production",
-  "professional_development",
-];
+export const PROGRAM_CATEGORIES: ProgramCategory[] = ["technology", "digital_business", "creative_production"];
 
 export const PROGRAM_CATEGORY_LABELS: Record<ProgramCategory, string> = {
   technology: "Technology",
   digital_business: "Digital Business",
   creative_production: "Creative Production",
-  professional_development: "Professional Development",
 };
 
 export const PROGRAM_CATEGORY_DESCRIPTIONS: Record<ProgramCategory, string> = {
   technology: "Software, design, and applied AI training for building real products.",
   digital_business: "Practical skills for running and growing a business online.",
-  creative_production: "Hands-on studio training in video, audio, photography, and design.",
-  professional_development: "Workplace and leadership skills for any career path.",
+  creative_production: "Hands-on studio training in video and audio production.",
 };
 
 export const LEARNING_MODE_LABELS: Record<ClassSessionMode, string> = {

@@ -4,7 +4,7 @@ import { DataTable, type DataTableColumn } from "@/components/shared/data-table"
 import { StatusBadge } from "@/components/shared/status-badge";
 import { CLASS_STATUS_LABELS, CLASS_STATUS_TONE, LEARNING_MODE_LABELS } from "@/lib/constants/programs";
 import { courseService } from "@/lib/services/course-service";
-import { studentService } from "@/lib/services/student-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import type { ClassGroup, ClassStatus } from "@/lib/types";
 import { ClassesFilters } from "./classes-filters";
 
@@ -24,11 +24,10 @@ interface AdminClassesPageProps {
 export default async function AdminClassesPage({ searchParams }: AdminClassesPageProps) {
   const { q, program: programId, status } = await searchParams;
 
-  const [classGroups, programs, intakes, students] = await Promise.all([
+  const [classGroups, programs, intakes] = await Promise.all([
     courseService.listAllClassGroups(),
     courseService.listPrograms(),
     courseService.listAllIntakes(),
-    studentService.listStudents(),
   ]);
 
   let rows: ClassRow[] = await Promise.all(
@@ -36,7 +35,7 @@ export default async function AdminClassesPage({ searchParams }: AdminClassesPag
       const intake = intakes.find((i) => i.id === classGroup.intakeId);
       const program = intake ? programs.find((p) => p.id === intake.programId) : undefined;
       const trainer = classGroup.staffLeadId ? await courseService.getStaffMember(classGroup.staffLeadId) : undefined;
-      const enrolledCount = students.filter((s) => s.classGroupId === classGroup.id).length;
+      const enrolledCount = (await enrollmentService.listStudentIdsForClassGroup(classGroup.id)).length;
 
       const row: ClassRow = {
         ...classGroup,

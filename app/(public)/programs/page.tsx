@@ -15,8 +15,8 @@ export default async function ProgramsPage() {
         <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">Programs</h1>
         <p className="mt-2 text-sm text-muted-foreground sm:text-base">
           SKAFF ACADEMY offers practical, industry-oriented training across technology, digital
-          business, creative production, and professional development. Training is delivered
-          primarily through physical classes on our Kigali campus.
+          business, and creative production. Training is delivered primarily through physical
+          classes on our Kigali campus.
         </p>
       </div>
 

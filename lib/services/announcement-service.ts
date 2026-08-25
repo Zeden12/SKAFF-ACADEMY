@@ -15,6 +15,7 @@ export interface CreateAnnouncementInput {
   authorStaffId: string;
   pinned?: boolean;
   programId?: string;
+  intakeId?: string;
   classGroupId?: string;
 }
 
@@ -52,11 +53,18 @@ export const announcementService = {
     return announcements.find((a) => a.id === announcementId);
   },
 
-  /** Announcements relevant to a student: academy-wide, plus any scoped to their program or class. */
-  async listAnnouncementsForStudentProgram(programId: string, classGroupId?: string): Promise<Announcement[]> {
+  /** Announcements relevant to a student: academy-wide, plus any scoped to their program, intake, or class. */
+  async listAnnouncementsForStudentProgram(
+    programId: string,
+    intakeId?: string,
+    classGroupId?: string
+  ): Promise<Announcement[]> {
     const forStudents = await announcementService.listAnnouncements("students");
     return forStudents.filter(
-      (a) => (!a.programId || a.programId === programId) && (!a.classGroupId || a.classGroupId === classGroupId)
+      (a) =>
+        (!a.programId || a.programId === programId) &&
+        (!a.intakeId || a.intakeId === intakeId) &&
+        (!a.classGroupId || a.classGroupId === classGroupId)
     );
   },
 
@@ -86,6 +94,7 @@ export const announcementService = {
       authorStaffId: input.authorStaffId,
       pinned: input.pinned,
       programId: input.programId,
+      intakeId: input.intakeId,
       classGroupId: input.classGroupId,
     };
     announcements.push(announcement);

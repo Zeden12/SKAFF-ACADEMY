@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -7,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LEARNING_MODE_LABELS } from "@/lib/constants/programs";
+import { formatDate } from "@/lib/utils";
 import type { Intake, Program } from "@/lib/types";
 import type { FieldErrors } from "../validation";
 import type { WizardFormState } from "../wizard-types";
@@ -14,14 +17,22 @@ import type { WizardFormState } from "../wizard-types";
 interface ProgramStepProps {
   programs: Program[];
   intakes: Intake[];
-  value: Pick<WizardFormState, "programId" | "learningMode">;
-  onChange: (value: Pick<WizardFormState, "programId" | "learningMode">) => void;
+  value: Pick<WizardFormState, "programId" | "intakeId" | "learningMode">;
+  onChange: (value: Pick<WizardFormState, "programId" | "intakeId" | "learningMode">) => void;
   errors: FieldErrors;
+}
+
+/** The next intake still accepting applications for a program, soonest start date first. */
+function findLatestOpenIntake(intakes: Intake[], programId: string): Intake | undefined {
+  const eligible = intakes.filter(
+    (i) => i.programId === programId && i.applicationsOpen && i.status !== "completed" && i.status !== "cancelled"
+  );
+  return [...eligible].sort((a, b) => new Date(a.startDate ?? 0).getTime() - new Date(b.startDate ?? 0).getTime())[0];
 }
 
 export function ProgramStep({ programs, intakes, value, onChange, errors }: ProgramStepProps) {
   const selectedProgram = programs.find((p) => p.id === value.programId);
-  const programIntakes = selectedProgram ? intakes.filter((i) => i.programId === selectedProgram.id) : [];
+  const openIntake = selectedProgram ? findLatestOpenIntake(intakes, selectedProgram.id) : undefined;
 
   return (
     <div className="space-y-5">
@@ -34,7 +45,8 @@ export function ProgramStep({ programs, intakes, value, onChange, errors }: Prog
           onValueChange={(programId) => {
             const nextProgram = programs.find((p) => p.id === programId);
             const nextMode = nextProgram?.learningModes.length === 1 ? nextProgram.learningModes[0] : undefined;
-            onChange({ programId, learningMode: nextMode });
+            const nextIntake = findLatestOpenIntake(intakes, programId);
+            onChange({ programId, intakeId: nextIntake?.id ?? "", learningMode: nextMode });
           }}
         >
           <SelectTrigger id="program-select" className="w-full" aria-invalid={Boolean(errors.programId)}>
@@ -76,17 +88,24 @@ export function ProgramStep({ programs, intakes, value, onChange, errors }: Prog
 
       {selectedProgram && (
         <div className="space-y-1.5">
-          <Label>Preferred Intake</Label>
-          {programIntakes.length > 0 ? (
+          <Label>Intake</Label>
+          {openIntake ? (
             <p className="text-sm text-muted-foreground">
-              This program currently has an open intake: {programIntakes.map((i) => i.label).join(", ")}.
-              Our admissions team will confirm placement after review.
+              This application will be submitted for <span className="font-medium text-foreground">{openIntake.label}</span>
+              {openIntake.startDate && <> — starting {formatDate(openIntake.startDate)}</>}. Our admissions team will
+              confirm placement after review.
             </p>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              No specific intake is currently published for this program. Our admissions team
-              will confirm your start date after reviewing your application.
-            </p>
+            <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/5 px-3 py-2.5 text-sm text-foreground">
+              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" />
+              <span>
+                Applications are currently closed for {selectedProgram.name}. Choose a different program above, or{" "}
+                <Link href="/contact" className="font-medium text-primary hover:underline">
+                  contact admissions
+                </Link>{" "}
+                to be notified when the next intake opens.
+              </span>
+            </div>
           )}
         </div>
       )}

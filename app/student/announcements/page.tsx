@@ -4,6 +4,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ANNOUNCEMENT_CATEGORY_LABELS } from "@/lib/constants/communication";
 import { studentService } from "@/lib/services/student-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { announcementService } from "@/lib/services/announcement-service";
 import { formatDate } from "@/lib/utils";
 
@@ -13,9 +14,11 @@ export default async function StudentAnnouncementsPage() {
     return <PageHeader title="Announcements" description="No student account found." />;
   }
 
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(current.profile.id);
   const announcements = await announcementService.listAnnouncementsForStudentProgram(
-    current.profile.programId,
-    current.profile.classGroupId
+    enrollmentContext?.program?.id ?? "",
+    enrollmentContext?.intake?.id,
+    enrollmentContext?.classGroup?.id
   );
 
   return (
@@ -38,6 +41,8 @@ export default async function StudentAnnouncementsPage() {
                   {announcement.pinned && <StatusBadge status="pinned" tone="warning" label="Pinned" />}
                   {announcement.classGroupId ? (
                     <StatusBadge status="class" tone="neutral" label="Your Class" />
+                  ) : announcement.intakeId ? (
+                    <StatusBadge status="intake" tone="neutral" label="Your Intake" />
                   ) : (
                     announcement.programId && <StatusBadge status="program" tone="neutral" label="Your Program" />
                   )}

@@ -76,6 +76,9 @@ export interface Application {
   /** e.g. "SKA-APP-2026-0001" — generated via generateApplicationReference, never hardcoded. */
   reference: string;
   programId: string;
+  /** The intake this application was submitted against — resolved automatically to the latest
+   *  eligible open intake for the chosen program, never picked manually by the applicant. */
+  intakeId: string;
   learningMode?: ClassSessionMode;
   personalInformation: ApplicantPersonalInformation;
   education: ApplicantEducation;
@@ -94,6 +97,7 @@ export interface Application {
 /** Shape assembled by the multi-step application form before it becomes a persisted Application. */
 export interface ApplicationDraftInput {
   programId: string;
+  intakeId: string;
   learningMode?: ClassSessionMode;
   personalInformation: ApplicantPersonalInformation;
   education: ApplicantEducation;

@@ -45,6 +45,9 @@ export type FeeStatus = "paid" | "partially_paid" | "pending" | "overdue";
 /** A billable item on a student's account (e.g. one term's tuition). */
 export interface FeeRecord {
   id: string;
+  /** The Enrollment (program/intake stint) this fee belongs to — a student can have more than
+   *  one over time, so a fee is never assumed to be their only program. */
+  enrollmentId: string;
   studentId: string;
   intakeId: string;
   description: string;

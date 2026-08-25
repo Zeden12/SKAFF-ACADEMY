@@ -15,6 +15,7 @@ import {
   Users,
   Layers,
   Settings,
+  CalendarRange,
 } from "lucide-react";
 
 /**
@@ -39,6 +40,7 @@ export const NAV_ICONS = {
   users: Users,
   layers: Layers,
   settings: Settings,
+  "calendar-range": CalendarRange,
 } as const satisfies Record<string, LucideIcon>;
 
 export type NavIconKey = keyof typeof NAV_ICONS;

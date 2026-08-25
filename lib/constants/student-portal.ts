@@ -9,6 +9,8 @@ import type {
   ResultPublicationStatus,
   ResultGrade,
   PaymentMethod,
+  EnrollmentStatus,
+  StaffRole,
 } from "@/lib/types";
 
 export const SUBMISSION_STATUS_LABELS: Record<SubmissionStatus, string> = {
@@ -119,6 +121,20 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   mobile_money: "Mobile Money",
   bank_transfer: "Bank Transfer",
   card: "Card",
+};
+
+export const ENROLLMENT_STATUS_LABELS: Record<EnrollmentStatus, string> = {
+  active: "Active",
+  completed: "Completed",
+  withdrawn: "Withdrawn",
+};
+
+export const STAFF_ROLE_LABELS: Record<StaffRole, string> = {
+  teacher: "Teacher / Trainer",
+  admin: "Administrator",
+  registrar: "Registrar",
+  finance: "Finance",
+  super_admin: "Super Admin",
 };
 
 /** Attendance rate below this is flagged with a neutral "requires attention" note — a demo

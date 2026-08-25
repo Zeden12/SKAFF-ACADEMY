@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, BookOpen, ClipboardList, FolderOpen, CheckSquare, GraduationCap, CalendarDays } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
+import { AdminMetricCard } from "@/components/shared/admin-metric-card";
 import { ClassSummaryCard } from "@/components/admin/class-summary-card";
 import { ClassRosterTable, type ClassRosterRow } from "@/components/admin/class-roster-table";
 import { ScheduleItem } from "@/components/student/schedule-item";
@@ -69,31 +69,31 @@ export default async function AdminClassDetailPage({ params }: ClassDetailPagePr
         enrolledCount={roster.length}
       />
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">Modules</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold text-foreground">{modules.length}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">Assignments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold text-foreground">{assignments.length}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">Materials</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold text-foreground">{materials.length}</p>
-          </CardContent>
-        </Card>
+      <div>
+        <h2 className="text-sm font-semibold text-foreground">Academic Operations</h2>
+        <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <AdminMetricCard label="Modules" value={modules.length} icon={BookOpen} />
+          <AdminMetricCard
+            label="Materials"
+            value={materials.length}
+            icon={FolderOpen}
+            href={`/admin/materials?class=${id}`}
+          />
+          <AdminMetricCard
+            label="Assignments"
+            value={assignments.length}
+            icon={ClipboardList}
+            href={`/admin/assignments?class=${id}`}
+          />
+          <AdminMetricCard label="Attendance" value="View" icon={CheckSquare} href={`/admin/attendance?class=${id}`} />
+          <AdminMetricCard
+            label="Results"
+            value="View"
+            icon={GraduationCap}
+            href={`/admin/results?class=${id}`}
+          />
+          <AdminMetricCard label="Schedule" value="View" icon={CalendarDays} href={`/admin/schedule?class=${id}`} />
+        </div>
       </div>
 
       <div>

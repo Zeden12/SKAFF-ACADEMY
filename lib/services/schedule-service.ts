@@ -1,7 +1,35 @@
-import type { ClassSession } from "@/lib/types";
+import type { ClassSession, ClassSessionMode } from "@/lib/types";
 import { classSessions } from "@/lib/mock-data/class-sessions";
+import { courseService } from "@/lib/services/course-service";
 
 export type ModuleProgressState = "completed" | "current" | "upcoming";
+
+export interface CreateSessionInput {
+  classGroupId: string;
+  moduleId: string;
+  staffId: string;
+  mode: ClassSessionMode;
+  title: string;
+  startsAt: string;
+  endsAt: string;
+  location?: string;
+  onlineUrl?: string;
+  notes?: string;
+}
+
+export type UpdateSessionInput = Partial<CreateSessionInput>;
+
+/** A session can never float without a valid class, and its module must belong to that
+ *  class's program — never an unrelated module. */
+async function assertValidClassAndModule(classGroupId: string, moduleId: string): Promise<void> {
+  const classGroup = await courseService.getClassGroup(classGroupId);
+  if (!classGroup) throw new Error("A valid class is required.");
+  const intake = await courseService.getIntake(classGroup.intakeId);
+  const mod = await courseService.getModule(moduleId);
+  if (!intake || !mod || mod.programId !== intake.programId) {
+    throw new Error("The selected module does not belong to this class's program.");
+  }
+}
 
 /** Derives a module's progress purely from whether its sessions are in the past or future. */
 export function deriveModuleState(sessions: ClassSession[]): ModuleProgressState {
@@ -74,6 +102,18 @@ export const scheduleService = {
     });
   },
 
+  async listAllUpcomingSessions(): Promise<ClassSession[]> {
+    const now = Date.now();
+    const all = await scheduleService.listAllSessions();
+    return all.filter((s) => new Date(s.endsAt).getTime() >= now);
+  },
+
+  async listAllPastSessions(): Promise<ClassSession[]> {
+    const now = Date.now();
+    const all = await scheduleService.listAllSessions();
+    return [...all.filter((s) => new Date(s.endsAt).getTime() < now)].reverse();
+  },
+
   async listSessionsThisWeek(): Promise<ClassSession[]> {
     const now = Date.now();
     const weekFromNow = now + 7 * 24 * 60 * 60 * 1000;
@@ -82,5 +122,49 @@ export const scheduleService = {
       const startsAt = new Date(s.startsAt).getTime();
       return startsAt >= now && startsAt < weekFromNow;
     });
+  },
+
+  // --- Admin-facing create/edit ---
+
+  async createSession(input: CreateSessionInput): Promise<ClassSession> {
+    await assertValidClassAndModule(input.classGroupId, input.moduleId);
+    if (new Date(input.endsAt).getTime() <= new Date(input.startsAt).getTime()) {
+      throw new Error("End time must be after the start time.");
+    }
+    const session: ClassSession = {
+      id: `session-${classSessions.length + 1}`,
+      classGroupId: input.classGroupId,
+      moduleId: input.moduleId,
+      staffId: input.staffId,
+      mode: input.mode,
+      title: input.title,
+      startsAt: input.startsAt,
+      endsAt: input.endsAt,
+      location: input.mode !== "online" ? input.location : undefined,
+      onlineUrl: input.mode === "online" ? input.onlineUrl : undefined,
+      notes: input.notes,
+    };
+    classSessions.push(session);
+    return session;
+  },
+
+  async updateSession(sessionId: string, updates: UpdateSessionInput): Promise<ClassSession> {
+    const session = classSessions.find((s) => s.id === sessionId);
+    if (!session) throw new Error(`Session ${sessionId} was not found.`);
+
+    const nextClassGroupId = updates.classGroupId ?? session.classGroupId;
+    const nextModuleId = updates.moduleId ?? session.moduleId;
+    await assertValidClassAndModule(nextClassGroupId, nextModuleId);
+
+    const nextStartsAt = updates.startsAt ?? session.startsAt;
+    const nextEndsAt = updates.endsAt ?? session.endsAt;
+    if (new Date(nextEndsAt).getTime() <= new Date(nextStartsAt).getTime()) {
+      throw new Error("End time must be after the start time.");
+    }
+
+    Object.assign(session, updates);
+    session.location = session.mode !== "online" ? (updates.location ?? session.location) : undefined;
+    session.onlineUrl = session.mode === "online" ? (updates.onlineUrl ?? session.onlineUrl) : undefined;
+    return session;
   },
 };

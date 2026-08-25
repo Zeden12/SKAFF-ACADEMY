@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { MaterialList } from "@/components/student/material-list";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { materialsService } from "@/lib/services/materials-service";
 import type { LearningMaterialType } from "@/lib/types";
 import { MaterialsFilters } from "./materials-filters";
@@ -17,7 +18,10 @@ export default async function StudentMaterialsPage({ searchParams }: MaterialsPa
     return <PageHeader title="Materials" description="No student account found." />;
   }
 
-  const modules = await courseService.listModulesForProgram(current.profile.programId);
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(current.profile.id);
+  const modules = enrollmentContext?.program
+    ? await courseService.listModulesForProgram(enrollmentContext.program.id)
+    : [];
   const moduleIds = modules.map((m) => m.id);
   let materials = await materialsService.listMaterialsForModules(moduleIds);
 

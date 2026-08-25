@@ -8,9 +8,10 @@ import { relativeDay } from "./date-helpers";
 export const feeRecords: FeeRecord[] = [
   {
     id: "fee-1",
+    enrollmentId: "enr-1",
     studentId: "student-1",
     intakeId: "intake-1",
-    description: "Tuition — Full-Stack Software Development (Cohort A)",
+    description: "Tuition — Full-Stack Development (Cohort A)",
     totalAmount: 450000,
     amountPaid: 250000,
     currency: "RWF",
@@ -19,6 +20,7 @@ export const feeRecords: FeeRecord[] = [
   },
   {
     id: "fee-2",
+    enrollmentId: "enr-2",
     studentId: "student-2",
     intakeId: "intake-2",
     description: "Tuition — UI/UX Design (Cohort B)",
@@ -30,9 +32,10 @@ export const feeRecords: FeeRecord[] = [
   },
   {
     id: "fee-3",
+    enrollmentId: "enr-3",
     studentId: "student-3",
     intakeId: "intake-1",
-    description: "Tuition — Full-Stack Software Development (Cohort A)",
+    description: "Tuition — Full-Stack Development (Cohort A)",
     totalAmount: 450000,
     amountPaid: 100000,
     currency: "RWF",
@@ -41,9 +44,10 @@ export const feeRecords: FeeRecord[] = [
   },
   {
     id: "fee-4",
+    enrollmentId: "enr-4",
     studentId: "student-4",
     intakeId: "intake-1",
-    description: "Tuition — Full-Stack Software Development (Cohort A)",
+    description: "Tuition — Full-Stack Development (Cohort A)",
     totalAmount: 450000,
     amountPaid: 450000,
     currency: "RWF",

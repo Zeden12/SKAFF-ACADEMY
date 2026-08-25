@@ -9,6 +9,7 @@ import { FeeStatusCard } from "@/components/student/fee-status-card";
 import { MaterialList } from "@/components/student/material-list";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { announcementService } from "@/lib/services/announcement-service";
 import { scheduleService } from "@/lib/services/schedule-service";
 import { materialsService } from "@/lib/services/materials-service";
@@ -24,15 +25,17 @@ export default async function StudentDashboardPage() {
   }
   const { profile: student, user } = current;
 
-  const [program, intake, classGroup, announcements] = await Promise.all([
-    courseService.getProgram(student.programId),
-    courseService.getIntake(student.intakeId),
-    student.classGroupId ? courseService.getClassGroup(student.classGroupId) : undefined,
-    announcementService.listAnnouncementsForStudentProgram(student.programId, student.classGroupId),
-  ]);
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(student.id);
+  const { program, intake, classGroup } = enrollmentContext ?? {};
 
-  const classGroupId = student.classGroupId;
-  const modules = await courseService.listModulesForProgram(student.programId);
+  const announcements = await announcementService.listAnnouncementsForStudentProgram(
+    program?.id ?? "",
+    intake?.id,
+    classGroup?.id
+  );
+
+  const classGroupId = classGroup?.id;
+  const modules = program ? await courseService.listModulesForProgram(program.id) : [];
   const moduleIds = modules.map((m) => m.id);
 
   const [nextSession, recentMaterials, assignments, attendanceSummary, resultsSummary] = await Promise.all([

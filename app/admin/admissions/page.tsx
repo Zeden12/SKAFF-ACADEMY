@@ -25,8 +25,9 @@ interface AdminAdmissionsPageProps {
 export default async function AdminAdmissionsPage({ searchParams }: AdminAdmissionsPageProps) {
   const { status, program: programId, q, sort } = await searchParams;
 
-  const [allPrograms, summaryCounts, filtered] = await Promise.all([
+  const [allPrograms, allIntakes, summaryCounts, filtered] = await Promise.all([
     courseService.listPrograms(),
+    courseService.listAllIntakes(),
     admissionsService.getSummaryCounts(),
     admissionsService.listApplications({
       status: status as ApplicationStatus | undefined,
@@ -38,11 +39,13 @@ export default async function AdminAdmissionsPage({ searchParams }: AdminAdmissi
   const rows = status ? filtered : filtered.filter((a) => a.status !== "draft");
   const sortedRows = sortApplications(rows, sort);
   const programsById = new Map(allPrograms.map((p) => [p.id, p]));
+  const intakesById = new Map(allIntakes.map((i) => [i.id, i]));
 
   const columns: DataTableColumn<Application>[] = [
     { header: "Applicant", accessor: (row) => row.personalInformation.fullName },
     { header: "Reference", accessor: (row) => <span className="font-mono text-xs">{row.reference}</span> },
     { header: "Program", accessor: (row) => programsById.get(row.programId)?.name ?? "—" },
+    { header: "Intake", accessor: (row) => intakesById.get(row.intakeId)?.label ?? "—" },
     { header: "Submitted", accessor: (row) => (row.submittedAt ? formatDate(row.submittedAt) : "—") },
     { header: "Status", accessor: (row) => <ApplicationStatusBadge status={row.status} /> },
     {

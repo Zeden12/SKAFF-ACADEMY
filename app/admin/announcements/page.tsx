@@ -22,13 +22,14 @@ interface AdminAnnouncementsPageProps {
 export default async function AdminAnnouncementsPage({ searchParams }: AdminAnnouncementsPageProps) {
   const { q, status, audience } = await searchParams;
 
-  const [announcements, programs, classGroups] = await Promise.all([
+  const [announcements, programs, intakes, classGroups] = await Promise.all([
     announcementService.listAllAnnouncements({
       query: q,
       status: status as AnnouncementPublicationStatus | undefined,
       audience: audience as AnnouncementAudience | undefined,
     }),
     courseService.listPrograms(),
+    courseService.listAllIntakes(),
     courseService.listAllClassGroups(),
   ]);
 
@@ -36,6 +37,8 @@ export default async function AdminAnnouncementsPage({ searchParams }: AdminAnno
     let targetLabel = ANNOUNCEMENT_AUDIENCE_LABELS[announcement.audience];
     if (announcement.classGroupId) {
       targetLabel = classGroups.find((c) => c.id === announcement.classGroupId)?.name ?? targetLabel;
+    } else if (announcement.intakeId) {
+      targetLabel = intakes.find((i) => i.id === announcement.intakeId)?.label ?? targetLabel;
     } else if (announcement.programId) {
       targetLabel = programs.find((p) => p.id === announcement.programId)?.name ?? targetLabel;
     }

@@ -5,26 +5,30 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ResultEntryForm, type ResultRosterStudent } from "@/components/admin/result-entry-form";
 import { courseService } from "@/lib/services/course-service";
 import { studentService } from "@/lib/services/student-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 
 export default async function NewAssessmentPage() {
-  const [programs, intakes, classGroups, modules, profiles] = await Promise.all([
+  const [programs, intakes, classGroups, modules, profiles, enrollmentContexts] = await Promise.all([
     courseService.listPrograms(),
     courseService.listAllIntakes(),
     courseService.listAllClassGroups(),
     courseService.listAllModules(),
     studentService.listStudents(),
+    enrollmentService.listActiveEnrollmentContexts(),
   ]);
+  const enrollmentByStudentId = new Map(enrollmentContexts.map((ctx) => [ctx.enrollment.studentId, ctx]));
 
   const students: ResultRosterStudent[] = (
     await Promise.all(
       profiles.map(async (profile) => {
         const user = await studentService.getUserForStudent(profile.id);
-        if (!profile.classGroupId || !user) return undefined;
+        const classGroupId = enrollmentByStudentId.get(profile.id)?.classGroup?.id;
+        if (!classGroupId || !user) return undefined;
         return {
           id: profile.id,
           studentNumber: profile.studentNumber,
           fullName: user.fullName,
-          classGroupId: profile.classGroupId,
+          classGroupId,
         };
       })
     )

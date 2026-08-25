@@ -3,6 +3,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ScheduleItem } from "@/components/student/schedule-item";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { scheduleService } from "@/lib/services/schedule-service";
 import type { ClassSession } from "@/lib/types";
 
@@ -28,10 +29,13 @@ export default async function StudentSchedulePage() {
   }
   const { profile: student } = current;
 
-  const modules = await courseService.listModulesForProgram(student.programId);
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(student.id);
+  const modules = enrollmentContext?.program
+    ? await courseService.listModulesForProgram(enrollmentContext.program.id)
+    : [];
   const trainer = undefined; // trainer shown per-session isn't required; classGroup-level trainer covered on course page
 
-  const classGroupId = student.classGroupId;
+  const classGroupId = enrollmentContext?.classGroup?.id;
   const upcoming = classGroupId ? await scheduleService.listUpcomingSessions(classGroupId) : [];
   const past = classGroupId ? await scheduleService.listPastSessions(classGroupId) : [];
 

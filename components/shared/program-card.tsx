@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code2, Megaphone, Clapperboard, Briefcase, Clock, ArrowRight } from "lucide-react";
+import { Code2, Megaphone, Clapperboard, Clock, ArrowRight } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -22,7 +22,6 @@ const CATEGORY_ICONS: Record<ProgramCategory, typeof Code2> = {
   technology: Code2,
   digital_business: Megaphone,
   creative_production: Clapperboard,
-  professional_development: Briefcase,
 };
 
 interface ProgramCardProps {

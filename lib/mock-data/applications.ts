@@ -22,6 +22,7 @@ export const applications: Application[] = [
     id: "app-1",
     reference: generateApplicationReference(1),
     programId: "prog-fullstack",
+    intakeId: "intake-1",
     learningMode: "physical",
     personalInformation: {
       fullName: "Jean Claude Habimana",
@@ -54,6 +55,7 @@ export const applications: Application[] = [
     id: "app-2",
     reference: generateApplicationReference(2),
     programId: "prog-uiux",
+    intakeId: "intake-2",
     learningMode: "physical",
     personalInformation: {
       fullName: "Aline Mutesi",
@@ -88,6 +90,7 @@ export const applications: Application[] = [
     id: "app-3",
     reference: generateApplicationReference(3),
     programId: "prog-digital-marketing",
+    intakeId: "intake-9",
     learningMode: "physical",
     personalInformation: {
       fullName: "Eric Nshuti",
@@ -132,6 +135,7 @@ export const applications: Application[] = [
     id: "app-4",
     reference: generateApplicationReference(4),
     programId: "prog-video-production",
+    intakeId: "intake-3",
     learningMode: "physical",
     personalInformation: {
       fullName: "Divine Uwase",
@@ -182,6 +186,7 @@ export const applications: Application[] = [
     id: "app-5",
     reference: generateApplicationReference(5),
     programId: "prog-audio-production",
+    intakeId: "intake-4",
     learningMode: "physical",
     personalInformation: {
       fullName: "Patrick Iradukunda",
@@ -231,6 +236,7 @@ export const applications: Application[] = [
     id: "app-6",
     reference: generateApplicationReference(6),
     programId: "prog-backend",
+    intakeId: "intake-5",
     learningMode: "online",
     personalInformation: {
       fullName: "Grace Ingabire",
@@ -253,7 +259,8 @@ export const applications: Application[] = [
   {
     id: "app-7",
     reference: generateApplicationReference(7),
-    programId: "prog-professional-skills",
+    programId: "prog-digital-marketing",
+    intakeId: "intake-8",
     learningMode: "physical",
     personalInformation: {
       fullName: "Samuel Bizimana",
@@ -279,7 +286,7 @@ export const applications: Application[] = [
     submittedAt: "2025-10-01T09:10:00.000Z",
     decision: {
       status: "approved",
-      message: "Congratulations, Samuel — your application to Professional Skills Training has been approved.",
+      message: "Congratulations, Samuel — your application to Digital Marketing & Social Media Management has been approved.",
       decidedAt: "2025-10-06T11:00:00.000Z",
       decidedBy: "Admissions Team",
     },
@@ -293,7 +300,7 @@ export const applications: Application[] = [
         actor: "admissions_staff",
         actorName: "Admissions Team",
         action: "Application approved",
-        description: "Congratulations, Samuel — your application to Professional Skills Training has been approved.",
+        description: "Congratulations, Samuel — your application to Digital Marketing & Social Media Management has been approved.",
         visibility: "public",
       },
       { id: "h-7-5", timestamp: "2025-10-20T09:00:00.000Z", actor: "admissions_staff", actorName: "Admissions Team", action: "Enrollment completed", visibility: "public" },

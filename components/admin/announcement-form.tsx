@@ -54,12 +54,16 @@ export function AnnouncementForm({ programs, intakes, classGroups, initialAnnoun
   const [status, setStatus] = useState<AnnouncementPublicationStatus>(initialAnnouncement?.status ?? "draft");
   const [pinned, setPinned] = useState(initialAnnouncement?.pinned ?? false);
   const [programId, setProgramId] = useState(initialAnnouncement?.programId ?? "");
+  const [intakeId, setIntakeId] = useState(initialAnnouncement?.intakeId ?? "");
   const [classGroupId, setClassGroupId] = useState(initialAnnouncement?.classGroupId ?? "");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
 
   const isStudentAudience = audience === "students";
-  const availableClassGroups = classGroups.filter((c) => classGroupToProgram.get(c.id) === programId);
+  const availableIntakes = intakes.filter((i) => i.programId === programId);
+  const availableClassGroups = classGroups.filter(
+    (c) => classGroupToProgram.get(c.id) === programId && (!intakeId || c.intakeId === intakeId)
+  );
 
   function handleSubmit() {
     const nextErrors: Record<string, string> = {};
@@ -77,6 +81,7 @@ export function AnnouncementForm({ programs, intakes, classGroups, initialAnnoun
         status,
         pinned,
         programId: isStudentAudience && programId ? programId : undefined,
+        intakeId: isStudentAudience && programId && intakeId ? intakeId : undefined,
         classGroupId: isStudentAudience && programId && classGroupId ? classGroupId : undefined,
       };
 
@@ -133,6 +138,7 @@ export function AnnouncementForm({ programs, intakes, classGroups, initialAnnoun
             onValueChange={(value) => {
               setAudience(value as AnnouncementAudience);
               setProgramId("");
+              setIntakeId("");
               setClassGroupId("");
             }}
           >
@@ -157,6 +163,7 @@ export function AnnouncementForm({ programs, intakes, classGroups, initialAnnoun
                 value={programId || "none"}
                 onValueChange={(value) => {
                   setProgramId(value === "none" ? "" : value);
+                  setIntakeId("");
                   setClassGroupId("");
                 }}
               >
@@ -177,6 +184,32 @@ export function AnnouncementForm({ programs, intakes, classGroups, initialAnnoun
             </div>
 
             <div className="space-y-1.5">
+              <Label htmlFor="announcement-intake">Target Intake (optional)</Label>
+              <Select
+                value={intakeId || "none"}
+                onValueChange={(value) => {
+                  setIntakeId(value === "none" ? "" : value);
+                  setClassGroupId("");
+                }}
+                disabled={!programId}
+              >
+                <SelectTrigger id="announcement-intake" className="w-full">
+                  <SelectValue placeholder="Entire program">
+                    {intakeId ? availableIntakes.find((i) => i.id === intakeId)?.label : "Entire program"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Entire program</SelectItem>
+                  {availableIntakes.map((intake) => (
+                    <SelectItem key={intake.id} value={intake.id}>
+                      {intake.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
               <Label htmlFor="announcement-class">Target Class (optional)</Label>
               <Select
                 value={classGroupId || "none"}
@@ -184,12 +217,12 @@ export function AnnouncementForm({ programs, intakes, classGroups, initialAnnoun
                 disabled={!programId}
               >
                 <SelectTrigger id="announcement-class" className="w-full">
-                  <SelectValue placeholder="Entire program">
-                    {classGroupId ? availableClassGroups.find((c) => c.id === classGroupId)?.name : "Entire program"}
+                  <SelectValue placeholder="Entire intake">
+                    {classGroupId ? availableClassGroups.find((c) => c.id === classGroupId)?.name : "Entire intake"}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Entire program</SelectItem>
+                  <SelectItem value="none">Entire intake</SelectItem>
                   {availableClassGroups.map((classGroup) => (
                     <SelectItem key={classGroup.id} value={classGroup.id}>
                       {classGroup.name}

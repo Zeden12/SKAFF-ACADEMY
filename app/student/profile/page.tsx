@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { studentService } from "@/lib/services/student-service";
-import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { formatDate } from "@/lib/utils";
 import { ContactForm } from "./contact-form";
 
@@ -13,10 +13,8 @@ export default async function StudentProfilePage() {
   }
   const { profile: student, user } = current;
 
-  const [program, intake] = await Promise.all([
-    courseService.getProgram(student.programId),
-    courseService.getIntake(student.intakeId),
-  ]);
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(student.id);
+  const { program, intake } = enrollmentContext ?? {};
 
   return (
     <div className="space-y-6">

@@ -17,6 +17,7 @@ import {
 } from "@/lib/constants/student-portal";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { attendanceService } from "@/lib/services/attendance-service";
 import { resultsService } from "@/lib/services/results-service";
 import { feesService } from "@/lib/services/fees-service";
@@ -36,11 +37,9 @@ export default async function AdminStudentDetailPage({ params }: StudentDetailPa
   const user = await studentService.getUserForStudent(id);
   if (!user) notFound();
 
-  const [program, intake, classGroup, statusHistory, attendanceSummary, results, feeSummary, feeRecords, documentRequests] =
+  const [enrollmentContext, statusHistory, attendanceSummary, results, feeSummary, feeRecords, documentRequests] =
     await Promise.all([
-      courseService.getProgram(student.programId),
-      courseService.getIntake(student.intakeId),
-      student.classGroupId ? courseService.getClassGroup(student.classGroupId) : undefined,
+      enrollmentService.getEnrollmentContextForStudent(id),
       studentService.getStatusHistory(id),
       attendanceService.getAttendanceSummary(id),
       resultsService.listResultsForStudent(id),
@@ -49,8 +48,10 @@ export default async function AdminStudentDetailPage({ params }: StudentDetailPa
       documentsService.listRequestsForStudent(id),
     ]);
 
-  const modules = await courseService.listModulesForProgram(student.programId);
-  const allSessions = student.classGroupId ? await scheduleService.listSessionsForClassGroup(student.classGroupId) : [];
+  const { program, intake, classGroup, enrollment } = enrollmentContext ?? {};
+
+  const modules = program ? await courseService.listModulesForProgram(program.id) : [];
+  const allSessions = classGroup ? await scheduleService.listSessionsForClassGroup(classGroup.id) : [];
   const completedModules = modules.filter(
     (mod) => deriveModuleState(allSessions.filter((s) => s.moduleId === mod.id)) === "completed"
   ).length;
@@ -68,7 +69,14 @@ export default async function AdminStudentDetailPage({ params }: StudentDetailPa
         </Link>
       </div>
 
-      <StudentSummary user={user} student={student} program={program} intake={intake} classGroup={classGroup} />
+      <StudentSummary
+        user={user}
+        student={student}
+        program={program}
+        intake={intake}
+        classGroup={classGroup}
+        enrollmentStatus={enrollment?.status}
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
