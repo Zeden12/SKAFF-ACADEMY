@@ -5,6 +5,7 @@ import { StudentStatusBadge } from "@/components/shared/student-status-badge";
 import { FEE_STATUS_LABELS } from "@/lib/constants/student-portal";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { attendanceService } from "@/lib/services/attendance-service";
 import { feesService } from "@/lib/services/fees-service";
 import type { StudentProfile, StudentStatus } from "@/lib/types";
@@ -25,25 +26,27 @@ interface AdminStudentsPageProps {
 export default async function AdminStudentsPage({ searchParams }: AdminStudentsPageProps) {
   const { q, status, program: programId, sort } = await searchParams;
 
-  const [profiles, programs, classGroups] = await Promise.all([
+  const [profiles, programs, enrollmentContexts] = await Promise.all([
     studentService.listStudents({
       status: status as StudentStatus | undefined,
       programId,
       query: q,
     }),
     courseService.listPrograms(),
-    courseService.listAllClassGroups(),
+    enrollmentService.listActiveEnrollmentContexts(),
   ]);
+  const enrollmentByStudentId = new Map(enrollmentContexts.map((ctx) => [ctx.enrollment.studentId, ctx]));
 
   const rows: StudentRow[] = await Promise.all(
     profiles.map(async (profile) => {
-      const [user, program, classGroup, attendanceSummary, feeRecords] = await Promise.all([
+      const enrollmentContext = enrollmentByStudentId.get(profile.id);
+      const [user, attendanceSummary, feeRecords] = await Promise.all([
         studentService.getUserForStudent(profile.id),
-        Promise.resolve(programs.find((p) => p.id === profile.programId)),
-        Promise.resolve(classGroups.find((c) => c.id === profile.classGroupId)),
         attendanceService.getAttendanceSummary(profile.id),
         feesService.listFeeRecordsForStudent(profile.id),
       ]);
+      const program = enrollmentContext?.program;
+      const classGroup = enrollmentContext?.classGroup;
 
       return {
         ...profile,

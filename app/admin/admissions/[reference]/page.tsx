@@ -27,6 +27,7 @@ export default async function AdminApplicationDetailPage({ params }: AdminApplic
   }
 
   const program = await courseService.getProgram(application.programId);
+  const intake = await courseService.getIntake(application.intakeId);
 
   return (
     <div className="space-y-6">
@@ -71,6 +72,7 @@ export default async function AdminApplicationDetailPage({ params }: AdminApplic
             </CardHeader>
             <CardContent className="grid gap-3 sm:grid-cols-2">
               <Field label="Program" value={program?.name ?? "—"} />
+              <Field label="Intake" value={intake?.label ?? "—"} />
               {application.learningMode && (
                 <Field label="Learning Mode" value={LEARNING_MODE_LABELS[application.learningMode]} />
               )}

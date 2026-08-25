@@ -1,6 +1,6 @@
 import type { Module } from "@/lib/types";
 
-/** Modules for the Full-Stack Software Development program, in teaching order. */
+/** Modules for the Full-Stack Development program, in teaching order. */
 export const modules: Module[] = [
   {
     id: "mod-1",

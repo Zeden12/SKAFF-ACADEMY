@@ -5,6 +5,7 @@ import type { StepKey, WizardFormState } from "../wizard-types";
 
 interface ReviewStepProps {
   program: Program;
+  intakeLabel?: string;
   state: WizardFormState;
   onEditSection: (step: StepKey) => void;
 }
@@ -16,7 +17,7 @@ const SECTION_TO_STEP: Record<ApplicationSummarySection, StepKey> = {
   documents: "documents",
 };
 
-export function ReviewStep({ program, state, onEditSection }: ReviewStepProps) {
+export function ReviewStep({ program, intakeLabel, state, onEditSection }: ReviewStepProps) {
   const documents = (Object.entries(state.documents) as [DocumentCategory, UploadedFileMeta | undefined][])
     .filter((entry): entry is [DocumentCategory, UploadedFileMeta] => Boolean(entry[1]))
     .map(([category, file]) => ({ category, fileName: file.fileName }));
@@ -28,6 +29,7 @@ export function ReviewStep({ program, state, onEditSection }: ReviewStepProps) {
       </p>
       <ApplicationSummary
         programName={program.name}
+        intakeLabel={intakeLabel}
         learningMode={state.learningMode}
         personalInformation={state.personalInformation}
         education={{

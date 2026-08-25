@@ -27,6 +27,8 @@ export type WizardDocuments = Partial<Record<DocumentCategory, UploadedFileMeta>
 
 export interface WizardFormState {
   programId: string;
+  /** Auto-resolved to the program's latest open intake — never chosen manually by the applicant. */
+  intakeId: string;
   learningMode?: ClassSessionMode;
   personalInformation: ApplicantPersonalInformation;
   education: WizardEducation;
@@ -35,6 +37,7 @@ export interface WizardFormState {
 
 export const EMPTY_WIZARD_STATE: WizardFormState = {
   programId: "",
+  intakeId: "",
   learningMode: undefined,
   personalInformation: {
     fullName: "",

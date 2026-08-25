@@ -21,6 +21,7 @@ interface SummaryDocument {
 
 interface ApplicationSummaryProps {
   programName: string;
+  intakeLabel?: string;
   learningMode?: ClassSessionMode;
   personalInformation: ApplicantPersonalInformation;
   education: ApplicantEducation;
@@ -31,6 +32,7 @@ interface ApplicationSummaryProps {
 
 export function ApplicationSummary({
   programName,
+  intakeLabel,
   learningMode,
   personalInformation,
   education,
@@ -41,6 +43,7 @@ export function ApplicationSummary({
     <div className="space-y-4">
       <SummarySection title="Program" onEdit={onEditSection && (() => onEditSection("program"))}>
         <SummaryRow label="Program" value={programName} />
+        {intakeLabel && <SummaryRow label="Intake" value={intakeLabel} />}
         {learningMode && <SummaryRow label="Learning Mode" value={LEARNING_MODE_LABELS[learningMode]} />}
       </SummarySection>
 

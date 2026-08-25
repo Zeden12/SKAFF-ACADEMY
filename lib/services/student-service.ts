@@ -1,6 +1,7 @@
 import type { StudentProfile, StudentStatus, StudentStatusHistoryEntry, User } from "@/lib/types";
 import { studentProfiles, studentUsers } from "@/lib/mock-data/students";
 import { studentStatusHistory } from "@/lib/mock-data/student-status-history";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 
 /**
  * The signed-in student for this frontend-first phase, since there is no real authentication
@@ -38,8 +39,14 @@ export const studentService = {
   async listStudents(filters: StudentFilters = {}): Promise<StudentProfile[]> {
     let results = studentProfiles;
     if (filters.status) results = results.filter((s) => s.status === filters.status);
-    if (filters.programId) results = results.filter((s) => s.programId === filters.programId);
-    if (filters.classGroupId) results = results.filter((s) => s.classGroupId === filters.classGroupId);
+    if (filters.programId) {
+      const ids = new Set(await enrollmentService.listStudentIdsForProgram(filters.programId));
+      results = results.filter((s) => ids.has(s.id));
+    }
+    if (filters.classGroupId) {
+      const ids = new Set(await enrollmentService.listStudentIdsForClassGroup(filters.classGroupId));
+      results = results.filter((s) => ids.has(s.id));
+    }
     if (filters.query) {
       const query = filters.query.toLowerCase();
       const matchingUserIds = new Set(
@@ -53,7 +60,8 @@ export const studentService = {
   },
 
   async listStudentsForClassGroup(classGroupId: string): Promise<StudentProfile[]> {
-    return studentProfiles.filter((s) => s.classGroupId === classGroupId);
+    const ids = new Set(await enrollmentService.listStudentIdsForClassGroup(classGroupId));
+    return studentProfiles.filter((s) => ids.has(s.id));
   },
 
   async getStudentProfile(studentId: string): Promise<StudentProfile | undefined> {

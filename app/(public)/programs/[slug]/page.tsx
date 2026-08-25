@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Code2, Megaphone, Clapperboard, Briefcase } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Code2, Megaphone, Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -22,7 +22,6 @@ const CATEGORY_ICONS: Record<ProgramCategory, typeof Code2> = {
   technology: Code2,
   digital_business: Megaphone,
   creative_production: Clapperboard,
-  professional_development: Briefcase,
 };
 
 export async function generateStaticParams() {

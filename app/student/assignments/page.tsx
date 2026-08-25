@@ -6,6 +6,7 @@ import { AssignmentStatusBadge } from "@/components/shared/assignment-status-bad
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { assignmentsService } from "@/lib/services/assignments-service";
 
 export default async function StudentAssignmentsPage() {
@@ -15,8 +16,11 @@ export default async function StudentAssignmentsPage() {
   }
   const { profile: student } = current;
 
-  const modules = await courseService.listModulesForProgram(student.programId);
-  const classGroupId = student.classGroupId;
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(student.id);
+  const modules = enrollmentContext?.program
+    ? await courseService.listModulesForProgram(enrollmentContext.program.id)
+    : [];
+  const classGroupId = enrollmentContext?.classGroup?.id;
   const assignments = classGroupId ? await assignmentsService.listAssignmentsForClassGroup(classGroupId) : [];
   const submissions = await assignmentsService.listSubmissionsForStudent(student.id);
 

@@ -32,6 +32,7 @@ function mustFind(reference: string): Application {
 export interface ApplicationFilters {
   status?: ApplicationStatus;
   programId?: string;
+  intakeId?: string;
   query?: string;
 }
 
@@ -45,6 +46,7 @@ export const admissionsService = {
     let results = applications;
     if (filters.status) results = results.filter((a) => a.status === filters.status);
     if (filters.programId) results = results.filter((a) => a.programId === filters.programId);
+    if (filters.intakeId) results = results.filter((a) => a.intakeId === filters.intakeId);
     if (filters.query) {
       const query = filters.query.toLowerCase();
       results = results.filter(
@@ -80,6 +82,7 @@ export const admissionsService = {
       id: `app-${sequence}`,
       reference,
       programId: input.programId,
+      intakeId: input.intakeId,
       learningMode: input.learningMode,
       personalInformation: input.personalInformation,
       education: input.education,

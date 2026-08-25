@@ -5,6 +5,7 @@ import { AttendanceSummary } from "@/components/student/attendance-summary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { scheduleService } from "@/lib/services/schedule-service";
 import { attendanceService } from "@/lib/services/attendance-service";
 import { formatDate } from "@/lib/utils";
@@ -15,10 +16,11 @@ export default async function StudentAttendancePage() {
     return <PageHeader title="Attendance" description="No student account found." />;
   }
 
+  const enrollmentContext = await enrollmentService.getEnrollmentContextForStudent(current.profile.id);
   const [records, summary, modules] = await Promise.all([
     attendanceService.listAttendanceForStudent(current.profile.id),
     attendanceService.getAttendanceSummary(current.profile.id),
-    courseService.listModulesForProgram(current.profile.programId),
+    enrollmentContext?.program ? courseService.listModulesForProgram(enrollmentContext.program.id) : Promise.resolve([]),
   ]);
 
   return (

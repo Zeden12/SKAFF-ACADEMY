@@ -20,6 +20,7 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   }
 
   const program = await courseService.getProgram(application.programId);
+  const intake = await courseService.getIntake(application.intakeId);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-14 text-center sm:px-6">
@@ -44,6 +45,12 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
             <span className="text-muted-foreground">Program</span>
             <span className="font-medium text-foreground">{program?.name ?? "—"}</span>
           </div>
+          {intake && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Intake</span>
+              <span className="font-medium text-foreground">{intake.label}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Status</span>
             <ApplicationStatusBadge status={application.status} />

@@ -15,14 +15,10 @@ import { SITE } from "@/lib/constants/site";
 import { courseService } from "@/lib/services/course-service";
 
 const CONTACT_DETAILS = [
-  {
-    icon: MapPin,
-    label: "Campus Location",
-    value: "Gisozi, Kigali — near the Gisozi Sector Office / Total Energies station area",
-  },
-  { icon: Phone, label: "Phone", value: "+250 788 000 000" },
-  { icon: Mail, label: "Email", value: "info@skaffacademy.rw" },
-  { icon: Clock, label: "Opening Hours", value: "Monday – Friday, 8:00 AM – 5:00 PM" },
+  { icon: MapPin, label: "Campus Location", value: SITE.campusAddress },
+  { icon: Phone, label: "Phone", value: SITE.contactPhone },
+  { icon: Mail, label: "Email", value: SITE.contactEmail },
+  { icon: Clock, label: "Opening Hours", value: SITE.openingHours },
 ];
 
 export default async function ContactPage() {

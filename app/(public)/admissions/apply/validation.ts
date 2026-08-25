@@ -22,7 +22,11 @@ export function validateStep(step: StepKey, state: WizardFormState): FieldErrors
 
 function validateProgramStep(state: WizardFormState): FieldErrors {
   const errors: FieldErrors = {};
-  if (!state.programId) errors.programId = "Choose a program to continue.";
+  if (!state.programId) {
+    errors.programId = "Choose a program to continue.";
+  } else if (!state.intakeId) {
+    errors.programId = "Applications are currently closed for this program. Choose a different program.";
+  }
   return errors;
 }
 

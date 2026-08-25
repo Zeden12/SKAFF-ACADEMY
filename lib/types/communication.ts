@@ -23,7 +23,9 @@ export interface Announcement {
   pinned?: boolean;
   /** Set to target a specific program's students rather than all students. */
   programId?: string;
-  /** Set to narrow further to one class within that program. */
+  /** Set to narrow further to one intake within that program. */
+  intakeId?: string;
+  /** Set to narrow further still to one class within that intake. */
   classGroupId?: string;
 }
 

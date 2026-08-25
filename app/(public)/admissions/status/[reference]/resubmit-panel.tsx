@@ -42,18 +42,21 @@ export function ResubmitPanel({ application }: ResubmitPanelProps) {
   function handleResubmit() {
     const personalErrors = validateStep("personal", {
       programId: "placeholder",
+      intakeId: "placeholder",
       personalInformation,
       education,
       documents,
     });
     const educationErrors = validateStep("education", {
       programId: "placeholder",
+      intakeId: "placeholder",
       personalInformation,
       education,
       documents,
     });
     const documentErrors = validateStep("documents", {
       programId: "placeholder",
+      intakeId: "placeholder",
       personalInformation,
       education,
       documents,

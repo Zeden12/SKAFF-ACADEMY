@@ -28,12 +28,23 @@ interface ApplicationWizardProps {
   initialProgramId?: string;
 }
 
+function findLatestOpenIntakeId(intakes: Intake[], programId: string): string {
+  const eligible = intakes.filter(
+    (i) => i.programId === programId && i.applicationsOpen && i.status !== "completed" && i.status !== "cancelled"
+  );
+  const latest = [...eligible].sort(
+    (a, b) => new Date(a.startDate ?? 0).getTime() - new Date(b.startDate ?? 0).getTime()
+  )[0];
+  return latest?.id ?? "";
+}
+
 export function ApplicationWizard({ programs, intakes, initialProgramId }: ApplicationWizardProps) {
   const router = useRouter();
   const [stepIndex, setStepIndex] = useState(0);
   const [state, setState] = useState<WizardFormState>(() => ({
     ...EMPTY_WIZARD_STATE,
     programId: initialProgramId ?? EMPTY_WIZARD_STATE.programId,
+    intakeId: initialProgramId ? findLatestOpenIntakeId(intakes, initialProgramId) : EMPTY_WIZARD_STATE.intakeId,
   }));
   const [errors, setErrors] = useState<FieldErrors>({});
   const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
@@ -51,10 +62,14 @@ export function ApplicationWizard({ programs, intakes, initialProgramId }: Appli
     try {
       const saved = JSON.parse(raw) as { state: WizardFormState; stepIndex: number };
       if (saved.state) {
+        const restoredProgramId = initialProgramId ?? saved.state.programId;
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setState({
           ...saved.state,
-          programId: initialProgramId ?? saved.state.programId,
+          programId: restoredProgramId,
+          intakeId: initialProgramId
+            ? findLatestOpenIntakeId(intakes, restoredProgramId)
+            : (saved.state.intakeId ?? findLatestOpenIntakeId(intakes, restoredProgramId)),
         });
         setStepIndex(Math.min(saved.stepIndex ?? 0, WIZARD_STEPS.length - 1));
         setRestoredNotice(true);
@@ -121,6 +136,7 @@ export function ApplicationWizard({ programs, intakes, initialProgramId }: Appli
 
         const result = await submitApplicationAction({
           programId: state.programId,
+          intakeId: state.intakeId,
           learningMode: state.learningMode,
           personalInformation: state.personalInformation,
           education: {
@@ -164,7 +180,7 @@ export function ApplicationWizard({ programs, intakes, initialProgramId }: Appli
             <ProgramStep
               programs={programs}
               intakes={intakes}
-              value={{ programId: state.programId, learningMode: state.learningMode }}
+              value={{ programId: state.programId, intakeId: state.intakeId, learningMode: state.learningMode }}
               onChange={(value) => updateState(value)}
               errors={errors}
             />
@@ -191,7 +207,12 @@ export function ApplicationWizard({ programs, intakes, initialProgramId }: Appli
             />
           )}
           {currentStepKey === "review" && selectedProgram && (
-            <ReviewStep program={selectedProgram} state={state} onEditSection={handleEditSection} />
+            <ReviewStep
+              program={selectedProgram}
+              intakeLabel={intakes.find((i) => i.id === state.intakeId)?.label}
+              state={state}
+              onEditSection={handleEditSection}
+            />
           )}
         </div>
       </div>

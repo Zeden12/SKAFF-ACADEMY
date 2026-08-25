@@ -4,11 +4,7 @@
  * A Program can have multiple Intakes; an Intake can contain one or more ClassGroups.
  */
 
-export type ProgramCategory =
-  | "technology"
-  | "digital_business"
-  | "creative_production"
-  | "professional_development";
+export type ProgramCategory = "technology" | "digital_business" | "creative_production";
 
 export interface Program {
   id: string;
@@ -16,6 +12,9 @@ export interface Program {
   code: string;
   name: string;
   category: ProgramCategory;
+  /** Fixed presentation order across the site (1-8) — the source of truth for program order,
+   *  independent of array/database order. */
+  displayOrder: number;
   /** Short marketing description used on cards and listings. */
   description: string;
   /** Longer overview paragraph used on the program detail page. */
@@ -31,16 +30,25 @@ export interface Program {
   isActive: boolean;
 }
 
-export type IntakeStatus = "upcoming" | "open" | "in_progress" | "closed";
+/** Intake lifecycle stage — deliberately the same vocabulary as ClassStatus. Whether the intake
+ *  is currently accepting applications is a separate concern, see `applicationsOpen`. */
+export type IntakeStatus = "upcoming" | "active" | "completed" | "cancelled";
 
 export interface Intake {
   id: string;
   programId: string;
+  /** Display name/identifier for this intake, e.g. "Cohort A". */
   label: string;
   status: IntakeStatus;
-  startDate: string;
-  endDate: string;
-  applicationDeadline: string;
+  /** Whether applicants can currently apply against this intake. */
+  applicationsOpen: boolean;
+  applicationOpensAt?: string;
+  applicationClosesAt?: string;
+  startDate?: string;
+  endDate?: string;
+  /** Defaults to the program's own learningModes when unset. */
+  studyModes?: ClassSessionMode[];
+  capacity?: number;
 }
 
 export type ClassStatus = "upcoming" | "active" | "completed" | "cancelled";

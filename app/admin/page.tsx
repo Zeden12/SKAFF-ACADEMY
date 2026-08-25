@@ -20,6 +20,7 @@ import { APPLICATION_STATUS_LABELS } from "@/lib/constants/admissions";
 import { dashboardService } from "@/lib/services/dashboard-service";
 import { studentService } from "@/lib/services/student-service";
 import { courseService } from "@/lib/services/course-service";
+import { enrollmentService } from "@/lib/services/enrollment-service";
 import { admissionsService } from "@/lib/services/admissions-service";
 import { scheduleService } from "@/lib/services/schedule-service";
 import { formatDate } from "@/lib/utils";
@@ -27,10 +28,9 @@ import { formatDate } from "@/lib/utils";
 const ATTENTION_STATUSES = ["on_hold", "suspended"] as const;
 
 export default async function AdminDashboardPage() {
-  const [summary, students, programs, allModules, recentApplications, todaySessions] = await Promise.all([
+  const [summary, students, allModules, recentApplications, todaySessions] = await Promise.all([
     dashboardService.getSummary(),
     studentService.listStudents(),
-    courseService.listPrograms(),
     courseService.listAllModules(),
     admissionsService.listApplications(),
     scheduleService.listSessionsToday(),
@@ -41,9 +41,11 @@ export default async function AdminDashboardPage() {
   const attentionStudents = students.filter((s) => ATTENTION_STATUSES.includes(s.status as "on_hold" | "suspended"));
   const attentionRows = await Promise.all(
     attentionStudents.map(async (student) => {
-      const user = await studentService.getUserForStudent(student.id);
-      const program = programs.find((p) => p.id === student.programId);
-      return user ? { user, student, programName: program?.name } : null;
+      const [user, enrollmentContext] = await Promise.all([
+        studentService.getUserForStudent(student.id),
+        enrollmentService.getEnrollmentContextForStudent(student.id),
+      ]);
+      return user ? { user, student, programName: enrollmentContext?.program?.name } : null;
     })
   );
 

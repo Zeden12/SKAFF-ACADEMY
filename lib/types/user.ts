@@ -28,9 +28,8 @@ export interface StudentProfile {
   userId: string;
   studentNumber: string;
   status: StudentStatus;
-  programId: string;
-  intakeId: string;
-  classGroupId?: string;
+  /** Program/Intake/ClassGroup are not stored here — read them through EnrollmentService,
+   *  which is the single source of truth for what a student is enrolled in. */
   dateOfBirth?: string;
   nationality?: string;
   nationalId?: string;
